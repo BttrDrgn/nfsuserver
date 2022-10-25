@@ -86,8 +86,8 @@ bool checkPortStatus(long ip, int port, int timeout)
 
 
 bool ClServerClass::Update() {
-	LV_ITEM item;
-	LVFINDINFO find;
+	LV_ITEMA item;
+	LVFINDINFOA find;
 
 	find.flags = LVFI_PARAM;
 	find.lParam = (LPARAM)this;
@@ -104,13 +104,14 @@ bool ClServerClass::Update() {
 		item.iItem = ListView_InsertItem (hList, &item);
 		item.mask = LVIF_TEXT;
 		item.iSubItem = 1;
-		item.pszText = "Offline";
+		item.pszText = (LPSTR)"Offline";
 		ListView_SetItem (hList, &item);
 		item.mask = LVIF_TEXT;
 		item.iSubItem = 2;
-		item.pszText = "-";
+		item.pszText = (LPSTR)"-";
 		ListView_SetItem (hList, &item);
-	} else {
+	} else
+	{
 		item.mask = LVIF_TEXT | LVIF_PARAM; // Text Style
 		item.iSubItem = 0;                  // Put in first coluom
 		item.pszText = IP;                  // Text to display (can be from a char variable) (Items)
@@ -118,11 +119,11 @@ bool ClServerClass::Update() {
 		ListView_SetItem (hList, &item);
 		item.mask = LVIF_TEXT;
 		item.iSubItem = 1;
-		item.pszText = "Offline";
+		item.pszText = (LPSTR)"Offline";
 		ListView_SetItem (hList, &item);
 		item.mask = LVIF_TEXT;
 		item.iSubItem = 2;
-		item.pszText = "-";
+		item.pszText = (LPSTR)"-";
 		ListView_SetItem (hList, &item);
 	}
 
@@ -346,7 +347,8 @@ void ClServersClass::UpdateFromWeb() {
 	srand (time (NULL));
 	sprintf (buf, "http://nfsug.harpywar.com/tracker/get_list.php?%u", rand ());
 
-	if (URLDownloadToCacheFile (NULL, buf, fname, 1024, 0, NULL) == S_OK) {
+	if (URLDownloadToCacheFileA(NULL, buf, fname, 1024, 0, NULL) == S_OK)
+	{
 		FILE *fil;
 		fil = fopen (fname, "rt");
 

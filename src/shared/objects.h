@@ -58,4 +58,4 @@ struct ConAccParam {
 	ConnectionsClass * Connections;
 	SOCKET sock;
 };
-MessageClass *MakeMessage( char * buffer, char * command, char * params [], int paramcount );
+MessageClass* MakeMessage(char* buffer, const char* command, char* params[], int paramcount);

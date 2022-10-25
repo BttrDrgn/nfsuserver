@@ -13,19 +13,21 @@
 
 #ifndef _WIN32
 
-int stricmp( const char *b, const char *a ){
-    while (*a != '\0' && *b != '\0' && tolower(*a) == tolower(*b)){
-        a++;
-        b++;
-    }
+int stricmp(const char* b, const char* a)
+{
+	while (*a != '\0' && *b != '\0' && tolower(*a) == tolower(*b))
+	{
+		a++;
+		b++;
+	}
 
-    return *a == *b ? 0 : tolower(*a)<tolower(*b) ? -1 : 1;
+	return *a == *b ? 0 : tolower(*a) < tolower(*b) ? -1 : 1;
 }
 #endif
 
 #ifdef NT_SERVICE
 
-FILE * g_LogFile;
+FILE* g_LogFile;
 char g_Msg[255];
 
 SERVICE_STATUS ServiceStatus;
@@ -48,15 +50,15 @@ bool BanV4;
 bool BanRoomsCreation;
 bool BanCheater;
 
-FILE * logfil = NULL;  //file pointer for logfile
+FILE* logfil = NULL;  //file pointer for logfile
 char logtemp[1100];    //temp variable for logging
-FILE * tlogfil = NULL; //file pointer for traffic logfile
+FILE* tlogfil = NULL; //file pointer for traffic logfile
 
-char * news = NULL;
+char* news = NULL;
 unsigned int ids = 0;
 time_t curtime;
 
-char *arr[30];
+char* arr[30];
 char arr2[30][1024];
 
 //sockets
@@ -101,31 +103,38 @@ std::vector<StarsDrift> S1306;
 std::vector<StarsDrift> S1307;
 std::vector<StarsDrift> S1308;
 
-bool sort_REP_All(PlayerStat a, PlayerStat b) {
+bool sort_REP_All(PlayerStat a, PlayerStat b)
+{
 	return a.REP_All > b.REP_All;
 };
 
-bool sort_REP_Circ(PlayerStat a, PlayerStat b) {
+bool sort_REP_Circ(PlayerStat a, PlayerStat b)
+{
 	return a.REP_Circ > b.REP_Circ;
 };
 
-bool sort_REP_Sprint(PlayerStat a, PlayerStat b) {
+bool sort_REP_Sprint(PlayerStat a, PlayerStat b)
+{
 	return a.REP_Sprint > b.REP_Sprint;
 };
 
-bool sort_REP_Drag(PlayerStat a, PlayerStat b) {
+bool sort_REP_Drag(PlayerStat a, PlayerStat b)
+{
 	return a.REP_Drag > b.REP_Drag;
 };
 
-bool sort_REP_Drift(PlayerStat a, PlayerStat b) {
+bool sort_REP_Drift(PlayerStat a, PlayerStat b)
+{
 	return a.REP_Drift > b.REP_Drift;
 };
 
-bool sort_Time(StarsLap a, StarsLap b) {
+bool sort_Time(StarsLap a, StarsLap b)
+{
 	return a.Time < b.Time;
 };
 
-bool sort_Points(StarsDrift a, StarsDrift b) {
+bool sort_Points(StarsDrift a, StarsDrift b)
+{
 	return a.Points > b.Points;
 };
 
@@ -157,30 +166,30 @@ char ascii[256] =
   64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64
 };
 
-void base64_out(char* buf, char* obuf, int len) {
+void base64_out(char* buf, char* obuf, int len)
+{
 	int nprbytes;
 	char* p = buf;
 	while (ascii[(int)*(p++)] <= 63);
 
 	nprbytes = len - 1;
 
-	while (nprbytes > 4 && *buf != '\0') {
+	while (nprbytes > 4 && *buf != '\0')
+	{
 		*(obuf++) = (ascii[(int)*buf] << 2 | ascii[(int)buf[1]] >> 4);
 		*(obuf++) = (ascii[(int)buf[1]] << 4 | ascii[(int)buf[2]] >> 2);
 		*(obuf++) = (ascii[(int)buf[2]] << 6 | ascii[(int)buf[3]]);
 		buf += 4;
 		nprbytes -= 4;
 	}
-	if (nprbytes > 1)
-		*(obuf++) = (ascii[(int)*buf] << 2 | ascii[(int)buf[1]] >> 4);
-	if (nprbytes > 2)
-		*(obuf++) = (ascii[(int)buf[1]] << 4 | ascii[(int)buf[2]] >> 2);
-	if (nprbytes > 3)
-		*(obuf++) = (ascii[(int)buf[2]] << 6 | ascii[(int)buf[3]]);
+	if (nprbytes > 1) *(obuf++) = (ascii[(int)*buf] << 2 | ascii[(int)buf[1]] >> 4);
+	if (nprbytes > 2) *(obuf++) = (ascii[(int)buf[1]] << 4 | ascii[(int)buf[2]] >> 2);
+	if (nprbytes > 3) *(obuf++) = (ascii[(int)buf[2]] << 6 | ascii[(int)buf[3]]);
 	*(obuf)++ = '\0';
 };
 
-void ShiftPersona(UserClass* user, RegUser* tr, int l) {
+void ShiftPersona(UserClass* user, RegUser* tr, int l)
+{
 	strcpy(user->Personas[l], user->Personas[l + 1]);
 	memset(user->Personas[l + 1], 0, 16);
 	strcpy(tr->Personas[l], tr->Personas[l + 1]);
@@ -203,17 +212,21 @@ bool IsCheater(const unsigned char wei, const unsigned char sus, const unsigned 
 	bra_tj = bra & 0x01;
 
 	// more than 3 TJ's
-	if ((wei_tj + sus_tj + eng_tj + tur_tj + nos_tj + ecu_tj + tra_tj + tir_tj + bra_tj) > 3) {
+	if ((wei_tj + sus_tj + eng_tj + tur_tj + nos_tj + ecu_tj + tra_tj + tir_tj + bra_tj) > 3)
+	{
 		return true;
 	}
 	// if carier car
-	if ((wei_tj + sus_tj + eng_tj + tur_tj + nos_tj + ecu_tj + tra_tj + tir_tj + bra_tj) == 3) {
+	if ((wei_tj + sus_tj + eng_tj + tur_tj + nos_tj + ecu_tj + tra_tj + tir_tj + bra_tj) == 3)
+	{
 		// at least one from first set of TJ's (eng trans tires)
-		if ((eng_tj + tra_tj + tir_tj) < 1) {
+		if ((eng_tj + tra_tj + tir_tj) < 1)
+		{
 			return true;
 		}
 		// no more than one part of the third set of TJ (weight reduction, suspension, NOS)
-		if ((wei_tj + sus_tj + nos_tj) > 1) {
+		if ((wei_tj + sus_tj + nos_tj) > 1)
+		{
 			return true;
 		}
 	}
@@ -7196,274 +7209,308 @@ void UpdateBestTimes(const int track, const int dir, const char* name0, const in
 };
 
 
-void Log( char *log ){
-    if (!DisableTimeStamp){
-        time_t t;
-        time(& t);
-        sprintf(logtemp, "[ %s  %s", ctime(& t), log);
-        logtemp[26] = 32;
-        logtemp[27] = 93;
-    }else{
-        strcpy(logtemp, log);
-    }
+void Log(const char* log)
+{
+	if (!DisableTimeStamp)
+	{
+		time_t t;
+		time(&t);
+		sprintf(logtemp, "[ %s  %s", ctime(&t), log);
+		logtemp[26] = 32;
+		logtemp[27] = 93;
+	}
+	else
+	{
+		strcpy(logtemp, log);
+	}
 
-    if (EnableLogScreen)
-        printf(logtemp);
+	if (EnableLogScreen)
+		printf(logtemp);
 
-    if ((logfil != NULL) && (EnableLogFile)){
-        fwrite(logtemp, strlen(logtemp), 1, logfil);
-        fflush(logfil);
-    }
+	if ((logfil != NULL) && (EnableLogFile)) {
+		fwrite(logtemp, strlen(logtemp), 1, logfil);
+		fflush(logfil);
+	}
 };
 
-void LogTraffic( char *log, int len ){
-    if (tlogfil != NULL){
-        fwrite(log, len, 1, tlogfil);
-        fwrite("\x0D\x0A", 2, 1, tlogfil);
-        fflush(tlogfil);
-    }
+void LogTraffic(char* log, int len) {
+	if (tlogfil != NULL) {
+		fwrite(log, len, 1, tlogfil);
+		fwrite("\x0D\x0A", 2, 1, tlogfil);
+		fflush(tlogfil);
+	}
 };
 
-void LoadNews(){
+void LoadNews() {
 	char log[1024];
-    FILE * fil;
-	char const * filename = "news.txt";
+	FILE* fil;
+	char const* filename = "news.txt";
 
-    fil = fopen(filename, "r");
+	fil = fopen(filename, "r");
 
-    if (fil == NULL){
-        news = _strdup(DEFAULT_NEWS);
+	if (fil == NULL) {
+		news = _strdup(DEFAULT_NEWS);
 		sprintf(log, "[warn] Could not open %s - loading default value.\n", filename);
 		Log(log);
-        return;
-    }
+		return;
+	}
 
-    fseek(fil, 0, SEEK_END);
-    int siz = ftell(fil);
-    fseek(fil, 0, SEEK_SET);
+	fseek(fil, 0, SEEK_END);
+	int siz = ftell(fil);
+	fseek(fil, 0, SEEK_SET);
 
-    if(siz>10238) siz=10238;
+	if (siz > 10238) siz = 10238;
 
-    if (news != NULL)
-        free(news);
+	if (news != NULL)
+		free(news);
 
-    news=(char*)calloc(siz+1, sizeof(char));
-    fread(news, siz, 1, fil);
-    fclose(fil);
+	news = (char*)calloc(siz + 1, sizeof(char));
+	fread(news, siz, 1, fil);
+	fclose(fil);
 };
 
-threadfunc IOThread(void * Dummy){
-	char log[1024];	
-	MessageClass *msg;
-	ConnectionClass *temp;
-	ConnectionsClass *con=(ConnectionsClass*)Dummy;
+threadfunc IOThread(void* Dummy)
+{
+	char log[1024];
+	MessageClass* msg;
+	ConnectionClass* temp;
+	ConnectionsClass* con = (ConnectionsClass*)Dummy;
 	sprintf(log, "Starting %s IO thread.\n", con->Name);
 	Log(log);
 	int k;
 	fd_set check;
 	timeval tim;
-	tim.tv_sec=0;
-	tim.tv_usec=100;
-	GameClass *Game;
-	RoomClass *Room;
+	tim.tv_sec = 0;
+	tim.tv_usec = 100;
+	GameClass* Game;
+	RoomClass* Room;
 
-	while(running){
-		temp=con->First;
-		while(temp!=NULL){
-			if(temp->Abort){
+	while (running) {
+		temp = con->First;
+		while (temp != NULL) {
+			if (temp->Abort) {
 				sprintf(log, "Aborting connection @ %s. IP : %s, SessionID : %u\n", con->Name, inet_ntoa(temp->remote_ip.sin_addr), temp->id);
 				Log(log);
-				con->RemoveConnection(temp);				
-				if(temp->user!=NULL){					
-					temp->user->Connection=NULL;
-					if(temp->user->CurrentRoom!=NULL){
-						if(temp->user->Game!=NULL){
-							Game=temp->user->Game;
+				con->RemoveConnection(temp);
+				if (temp->user != NULL) {
+					temp->user->Connection = NULL;
+					if (temp->user->CurrentRoom != NULL) {
+						if (temp->user->Game != NULL) {
+							Game = temp->user->Game;
 							Game->RemoveUser(temp->user, temp->Buffer);
-							if(Game->Count==0){
+							if (Game->Count == 0) {
 								temp->user->CurrentRoom->Games.RemoveGame(Game);
 								free(Game);
 							}
 							temp->user->CurrentRoom->RefreshUser(temp->user, temp->Buffer);
 						}
-						Room=temp->user->CurrentRoom;
+						Room = temp->user->CurrentRoom;
 						Room->RemoveUser(temp->user, temp->Buffer);
-						if((Room->Count==0)&&(!Room->IsGlobal)){
+						if ((Room->Count == 0) && (!Room->IsGlobal)) {
 							Server.Rooms.RemoveRoom(Room);
 							free(Room);
 						}
-					}					
-				}				
+					}
+				}
 				temp->IncomingMessages.Clear();
 				temp->IncomingMessages.mut.DeInit();
 				temp->OutgoingMessages.Clear();
 				temp->OutgoingMessages.mut.DeInit();
 				closesocket(temp->sock);
 				free(temp);
-				temp=NULL;
+				temp = NULL;
 				break;
 			}
 
-			msg=temp->OutgoingMessages.RemoveFirstMessage();
-			while(msg!=NULL){				
-				if(Verbose){
+			msg = temp->OutgoingMessages.RemoveFirstMessage();
+			while (msg != NULL)
+			{
+				if (Verbose)
+				{
 					sprintf(log, "Sending outgoing message @ %s. Command: %s, IP : %s, SessionID : %u\n", con->Name, msg->Message, inet_ntoa(temp->remote_ip.sin_addr), temp->id);
 					Log(log);
 				}
-				k=send(temp->sock, msg->Message, msg->Size, 0);
-				if(k!=msg->Size){
+				k = send(temp->sock, msg->Message, msg->Size, 0);
+				if (k != msg->Size)
+				{
 					closesocket(temp->sock);
-					temp->Abort=true;					
+					temp->Abort = true;
 					break;
 				}
 				free(msg->Message);
 				free(msg);
-				msg=temp->OutgoingMessages.RemoveFirstMessage();
+				msg = temp->OutgoingMessages.RemoveFirstMessage();
 			}
 			FD_ZERO(&check);
 			FD_SET(temp->sock, &check);
-			tim.tv_sec=0;
-			tim.tv_usec=0;
-			k=select(temp->sock+1, &check, NULL, NULL, &tim);
-			if(k<0){
+			tim.tv_sec = 0;
+			tim.tv_usec = 0;
+			k = select(temp->sock + 1, &check, NULL, NULL, &tim);
+			if (k < 0)
+			{
 #ifndef _WIN32
-				if(errno != EAGAIN){
+				if (errno != EAGAIN)
+				{
 					sprintf(log, "Error on select() errno : %u\n", errno);
 #else
-				if(WSAGetLastError()!=WSAENOTSOCK){
+				if (WSAGetLastError() != WSAENOTSOCK)
+				{
 					sprintf(log, "Error on select() WSAError : %u\n", WSAGetLastError());
 #endif				
 					Log(log);
 #ifdef _WIN32
-				}else{
-					temp->Abort=true;
+				}
+				else
+				{
+					temp->Abort = true;
 #endif
 				}
 			}
-			if(k==1){
-				if(temp->Received<12){
-					k=recv(temp->sock, temp->Buffer+temp->Received, 12-temp->Received, 0);
-					if(k<1){						
-						if(Verbose){
+			if (k == 1)
+			{
+				if (temp->Received < 12)
+				{
+					k = recv(temp->sock, temp->Buffer + temp->Received, 12 - temp->Received, 0);
+					if (k < 1)
+					{
+						if (Verbose)
+						{
 							sprintf(log, "Receiving command failed - connection closed @ %s. IP : %s, SessionID : %u\n", con->Name, inet_ntoa(temp->remote_ip.sin_addr), temp->id);
-							Log(log);						
+							Log(log);
 						}
-						temp->Abort=true;
-					}else{
+						temp->Abort = true;
+					}
+					else
+					{
 						//sprintf(log, "Receiving command succeed @ %s\n", con->Name);
 						//Log(log);
-						temp->Received+=k;
+						temp->Received += k;
 					}
 				}
-				if(temp->Received>11){
+				if (temp->Received > 11)
+				{
 					//sprintf(log, "Receiving command data.\n");
 					//Log(log);
-					DWORD req=(temp->Buffer[11]&0xFF)|((temp->Buffer[10]<<8)&0xFF00)|((temp->Buffer[9]<<16)&0xFF0000)|((temp->Buffer[8]<<24)&0xFF000000);
-//					WSASetLastError(0);
-					if((req>12)&&(req<1000)){
-						k=recv(temp->sock, temp->Buffer+temp->Received, req-temp->Received, 0);
-						if(k<1){							
-							if(Verbose){
+					DWORD req = (temp->Buffer[11] & 0xFF) | ((temp->Buffer[10] << 8) & 0xFF00) | ((temp->Buffer[9] << 16) & 0xFF0000) | ((temp->Buffer[8] << 24) & 0xFF000000);
+					//					WSASetLastError(0);
+					if ((req > 12) && (req < 1000))
+					{
+						k = recv(temp->sock, temp->Buffer + temp->Received, req - temp->Received, 0);
+						if (k < 1)
+						{
+							if (Verbose)
+							{
 								sprintf(log, "Receiving command failed - connection closed @ %s. IP : %s, SessionID : %u\n", con->Name, inet_ntoa(temp->remote_ip.sin_addr), temp->id);
 								Log(log);
 							}
 							closesocket(temp->sock);
-							temp->Abort=true;
-						}else{
-						//sprintf(log, "Receiving data succeed @ %s : %s\n", con->Name, inet_ntoa(temp->remote_ip.sin_addr));
-						//Log(log);
-							temp->Received+=k;
+							temp->Abort = true;
+						}
+						else
+						{
+							//sprintf(log, "Receiving data succeed @ %s : %s\n", con->Name, inet_ntoa(temp->remote_ip.sin_addr));
+							//Log(log);
+							temp->Received += k;
 						}
 					}
-					if(req>999){
-						temp->Abort=true;
+
+					if (req > 999)
+					{
+						temp->Abort = true;
 					}
-					if(temp->Received==req){						
-						if(Verbose){
+
+					if (temp->Received == req)
+					{
+						if (Verbose)
+						{
 							sprintf(log, "Receiving data complete @ %s. Command : %s, IP : %s, SessionID  :%u\n", con->Name, temp->Buffer, inet_ntoa(temp->remote_ip.sin_addr), temp->id);
 							Log(log);
 						}
-						msg=(MessageClass*)calloc(1, sizeof(MessageClass));
-						msg->Message=(char*)calloc(temp->Received, sizeof(char));
-						msg->Size=temp->Received;
+
+						msg = (MessageClass*)calloc(1, sizeof(MessageClass));
+						msg->Message = (char*)calloc(temp->Received, sizeof(char));
+						msg->Size = temp->Received;
 						memcpy(msg->Message, temp->Buffer, temp->Received);
 						temp->IncomingMessages.AddMessage(msg);
-						temp->Received=0;
+						temp->Received = 0;
 					}
 				}
 			}
-			if((int)(difftime(curtime, temp->Idle))==50){
+
+			if ((int)(difftime(curtime, temp->Idle)) == 50)
+			{
 				sprintf(log, "Aborting connection due to timeout @ %s, IP: %s\n", con->Name, inet_ntoa(temp->remote_ip.sin_addr));
 				Log(log);
-				temp->Abort=true;
-			}			
-			temp=temp->Next;
+				temp->Abort = true;
+			}
+			temp = temp->Next;
 		}
 		Sleep(10);
 	}
 };
 
-threadfunc AcceptThread(void *Dummy){
+threadfunc AcceptThread(void* Dummy)
+{
 	SOCKET cl;
 	char log[1024];
 
-	ConAccParam *acc=(ConAccParam*)Dummy;
+	ConAccParam* acc = (ConAccParam*)Dummy;
 
 	sprintf(log, "Starting %s thread\n", acc->Name);
 	Log(log);
 
-	unsigned long remote_sockaddr_length = sizeof(SOCKADDR_IN);	
+	unsigned long remote_sockaddr_length = sizeof(SOCKADDR_IN);
 
-	ConnectionClass *temp;
+	ConnectionClass* temp;
 
 #ifdef _WIN32
-	int timeo=10;
+	int timeo = 10;
 #else
 	struct timeval timeo;
-	timeo.tv_sec  = 0;
+	timeo.tv_sec = 0;
 	timeo.tv_usec = 10000;
 #endif
-	while(running){
-		cl=accept(acc->sock, NULL, NULL);
-		if(cl!=INVALID_SOCKET){
-			temp=(ConnectionClass*)calloc(1, sizeof(ConnectionClass));
+	while (running) {
+		cl = accept(acc->sock, NULL, NULL);
+		if (cl != INVALID_SOCKET) {
+			temp = (ConnectionClass*)calloc(1, sizeof(ConnectionClass));
 			temp->IncomingMessages.mut.Init();
 			temp->OutgoingMessages.mut.Init();
-			temp->sock=cl;
+			temp->sock = cl;
 #ifndef _WIN32
-			getsockname(temp->sock, (SOCKADDR *)&temp->local_ip,(socklen_t*) &remote_sockaddr_length);
-			getpeername(temp->sock, (SOCKADDR *)&temp->remote_ip,(socklen_t*) &remote_sockaddr_length);
+			getsockname(temp->sock, (SOCKADDR*)&temp->local_ip, (socklen_t*)&remote_sockaddr_length);
+			getpeername(temp->sock, (SOCKADDR*)&temp->remote_ip, (socklen_t*)&remote_sockaddr_length);
 #else
-			getsockname(temp->sock, (SOCKADDR *)&temp->local_ip ,(int*) &remote_sockaddr_length);
-			getpeername(temp->sock, (SOCKADDR *)&temp->remote_ip,(int*) &remote_sockaddr_length);
+			getsockname(temp->sock, (SOCKADDR*)&temp->local_ip, (int*)&remote_sockaddr_length);
+			getpeername(temp->sock, (SOCKADDR*)&temp->remote_ip, (int*)&remote_sockaddr_length);
 #endif
 			time(&temp->Idle);
 			acc->Connections->AddConnection(temp);
-			temp->id=ids++;				
+			temp->id = ids++;
 			sprintf(log, "Accepting client @ %s. IP : %s, ID : %u\n", acc->Name, inet_ntoa(temp->remote_ip.sin_addr), temp->id);
 			Log(log);
 		}
 	}
 };
 
-threadfunc RedirectorWorker(void *Dummy){
+threadfunc RedirectorWorker(void* Dummy) {
 	Log("Starting RedirectorWorker thread.\n");
 	char log[1024];
 	char buffer[1024];
 
-	MessageClass *msg;
-	MessageClass *tmsg;
+	MessageClass* msg;
+	MessageClass* tmsg;
 
-	ConnectionClass *temp;
-	while(running){
+	ConnectionClass* temp;
+	while (running) {
 		RedirectConnections.mut.Lock();
-		temp=RedirectConnections.First;
-		while(temp!=NULL){
-			msg=temp->IncomingMessages.RemoveFirstMessage();
-			while(msg!=NULL){
+		temp = RedirectConnections.First;
+		while (temp != NULL) {
+			msg = temp->IncomingMessages.RemoveFirstMessage();
+			while (msg != NULL) {
 				free(msg->Message);
-				free(msg);				
-				if(Verbose){
+				free(msg);
+				if (Verbose) {
 					sprintf(log, "Adding outgoing message : server_info_to_nfsu : %s\n", inet_ntoa(temp->remote_ip.sin_addr));
 					Log(log);
 				}
@@ -7471,40 +7518,41 @@ threadfunc RedirectorWorker(void *Dummy){
 				sprintf(arr2[1], "PORT=10901");
 				sprintf(arr2[2], "SESS=1072010288");
 				sprintf(arr2[3], "MASK=0295f3f70ecb1757cd7001b9a7a5eac8");
-				int k=MakeCommand(buffer, "@dir", arr, 4);
-				tmsg=(MessageClass*)calloc(1, sizeof(MessageClass));
-				tmsg->Message=(char*)calloc(k, sizeof(char));
+				int k = MakeCommand(buffer, "@dir", arr, 4);
+				tmsg = (MessageClass*)calloc(1, sizeof(MessageClass));
+				tmsg->Message = (char*)calloc(k, sizeof(char));
 				memcpy(tmsg->Message, buffer, k);
-				tmsg->Size=k;
+				tmsg->Size = k;
 				temp->OutgoingMessages.AddMessage(tmsg);
 
-				msg=temp->IncomingMessages.RemoveFirstMessage();
+				msg = temp->IncomingMessages.RemoveFirstMessage();
 			}
-			temp=temp->Next;
+			temp = temp->Next;
 		}
 		RedirectConnections.mut.Unlock();
 		Sleep(10);
 	}
 };
 
-void Subscribe(){
+void Subscribe() {
 	char log[1024];
 	char const* trackeraddr = "nfsug.harpywar.com";
-	struct hostent *hostInfo = gethostbyname(trackeraddr);
+	struct hostent* hostInfo = gethostbyname(trackeraddr);
 	SOCKADDR_IN remote_sockaddr_in;
-	unsigned long remote_sockaddr_length = sizeof(SOCKADDR_IN);	
+	unsigned long remote_sockaddr_length = sizeof(SOCKADDR_IN);
 	char buf[1024];
 
 	remote_sockaddr_in.sin_family = AF_INET;
 	remote_sockaddr_in.sin_port = htons(80);
 
-	if(hostInfo!=NULL){		
+	if (hostInfo != NULL) {
 #ifdef _WIN32
 		memcpy(&remote_sockaddr_in.sin_addr.S_un.S_addr, hostInfo->h_addr_list[0], hostInfo->h_length);
 #else
 		memcpy(&remote_sockaddr_in.sin_addr.s_addr, hostInfo->h_addr_list[0], hostInfo->h_length);
 #endif
-	}else{
+	}
+	else {
 		//remote_sockaddr_in.sin_addr.s_addr = inet_addr("195.2.101.48");
 		if (remote_sockaddr_in.sin_addr.s_addr == INADDR_NONE) {
 			sprintf(log, "[warn] Could not connect to server list tracker %s.\n", trackeraddr);
@@ -7513,9 +7561,9 @@ void Subscribe(){
 		}
 	}
 
-	SOCKET sock=socket(AF_INET, SOCK_STREAM, 0);
-	if(sock==INVALID_SOCKET) return;
-	if(connect(sock, (const sockaddr*)&remote_sockaddr_in, remote_sockaddr_length)==0){
+	SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
+	if (sock == INVALID_SOCKET) return;
+	if (connect(sock, (const sockaddr*)&remote_sockaddr_in, remote_sockaddr_length) == 0) {
 		sprintf(buf, "GET /tracker/submit.php HTTP/1.1\x0d\x0aHost: %s\x0d\x0a\x0d\x0a", trackeraddr);
 		send(sock, buf, strlen(buf), 0);
 		recv(sock, buf, 1024, 0);
@@ -7523,20 +7571,21 @@ void Subscribe(){
 	}
 }
 
-threadfunc WebReport(void *dummy){
-	while(running){
+threadfunc WebReport(void* dummy) {
+	while (running) {
 		Subscribe();
-		Sleep(1000*60);
+		Sleep(1000 * 60);
 	}
 };
 
-threadfunc ListenerWorker(void *Dummy){
+threadfunc ListenerWorker(void* Dummy)
+{
 	char log[1024];
 	sprintf(log, "Starting ListenerWorker thread.\n");
 	Log(log);
 	char buffer[1024];
-	char *buf;
-	char *tmp, *tmp2;
+	char* buf;
+	char* tmp, * tmp2;
 
 	char resu[1024];
 	char dec_resu[1024];
@@ -7544,10 +7593,10 @@ threadfunc ListenerWorker(void *Dummy){
 	char car_b64[9]; // car info in base64 from AUXI replica
 	char car_dec[6]; // decoded car info
 
-	MessageClass *msg;
-	UserClass *user;
+	MessageClass* msg;
+	UserClass* user;
 
-	int p=22;
+	int p = 22;
 	char ttm[5];
 
 
@@ -7555,42 +7604,42 @@ threadfunc ListenerWorker(void *Dummy){
 
 	int k;
 
-	ConnectionClass *temp;
+	ConnectionClass* temp;
 
-	while(running) {
+	while (running) {
 		ClientConnections.mut.Lock();
-		temp=ClientConnections.First;
+		temp = ClientConnections.First;
 
-		while(temp!=NULL) {
-			if((int)(difftime(curtime, temp->Idle))==30){
-				ttm[3]=(char)p++;
-				ttm[2]=(char)p>>8;
-				ttm[1]=(char)p>>16;
-				ttm[0]=(char)p>>24;
+		while (temp != NULL) {
+			if ((int)(difftime(curtime, temp->Idle)) == 30) {
+				ttm[3] = (char)p++;
+				ttm[2] = (char)p >> 8;
+				ttm[1] = (char)p >> 16;
+				ttm[0] = (char)p >> 24;
 				memcpy(log, "~png", 4);
-				memcpy(log+4, ttm, 4);
-				memcpy(log+8, "\x00\x00\x00\x0c", 4);
+				memcpy(log + 4, ttm, 4);
+				memcpy(log + 8, "\x00\x00\x00\x0c", 4);
 
-				msg=(MessageClass*)calloc(1, sizeof(MessageClass));
-				msg->Message=(char*)calloc(12, sizeof(char));
+				msg = (MessageClass*)calloc(1, sizeof(MessageClass));
+				msg->Message = (char*)calloc(12, sizeof(char));
 				memcpy(msg->Message, log, 12);
-				msg->Size=12;
-				temp->OutgoingMessages.AddMessage(msg); 
+				msg->Size = 12;
+				temp->OutgoingMessages.AddMessage(msg);
 
-				temp->Idle-=1;
+				temp->Idle -= 1;
 			}
 
-			msg=temp->IncomingMessages.RemoveFirstMessage();
+			msg = temp->IncomingMessages.RemoveFirstMessage();
 
-			while(msg != NULL) {
+			while (msg != NULL) {
 				buf = msg->Message;
 				user = temp->user;
 
 				if (LogAllTraffic) LogTraffic(msg->Message, msg->Size);
 
-				switch(buf[0]) {
+				switch (buf[0]) {
 				case 'g':
-					switch(buf[1]) {
+					switch (buf[1]) {
 					case 'l': //glea
 						if (strncmp(buf + 2, "ea", 2) == 0) {
 							tmp = strchr(buf + 17, 10);
@@ -7793,7 +7842,7 @@ threadfunc ListenerWorker(void *Dummy){
 					}
 					break;
 				case 'm':
-					switch(buf[1]) {
+					switch (buf[1]) {
 					case 'o': //move
 						if (strncmp(buf + 2, "ve", 2) == 0) {
 							tmp = strchr(buf + 17, 10);
@@ -8084,7 +8133,7 @@ threadfunc ListenerWorker(void *Dummy){
 								if (FinishMark == 1)  // todo: need to improve this condition
 									UpdateBestTimes(Track, Dir, rept, Car, BestLap, BestDrift);
 							}
-							
+
 							sprintf(arr2[0], "RANK=Unranked");
 							sprintf(arr2[1], "TIME=866");
 							temp->OutgoingMessages.AddMessage(MakeMessage(buffer, "rank", arr, 2));
@@ -8188,7 +8237,7 @@ threadfunc ListenerWorker(void *Dummy){
 								strcpy(arr2[0], buf + 12);
 								temp->OutgoingMessages.AddMessage(MakeMessage(buffer, "auxi", arr, 1));
 
-								
+
 								//check car for cheating
 								unsigned char Car_brand, Wei, Sus, Eng, Tur, Nos, Ecu, Tra, Tir, Bra;
 
@@ -8562,7 +8611,7 @@ N=username
 R=item index
 P=rep points
 S=1,wins_in_hex,loses_in_hex,
-0x0000   2B 73 6E 70 00 00 00 00-00 00 00 A4 4E 3D 4C 75   +snp.......¤N=Lu
+0x0000   2B 73 6E 70 00 00 00 00-00 00 00 A4 4E 3D 4C 75   +snp.......Â¤N=Lu
 0x0010   67 6E 65 72 63 68 72 69-73 09 52 3D 31 09 50 3D   gnerchris.R=1.P=
 0x0020   32 35 30 30 30 30 37 34-09 53 3D 31 2C 66 36 61   25000074.S=1,f6a
 0x0030   2C 39 33 38 2C 31 39 36-2C 31 37 64 37 38 38 61   ,938,196,17d788a
@@ -8572,7 +8621,7 @@ S=1,wins_in_hex,loses_in_hex,
 0x0070   66 2C 2C 31 2C 2C 36 34-2C 36 61 34 38 2C 32 31   f,,1,,64,6a48,21
 0x0080   35 39 2C 31 2C 66 36 61-2C 39 33 37 2C 31 39 36   59,1,f6a,937,196
 0x0090   2C 35 66 35 65 30 66 66-2C 31 39 66 34 62 32 2C   ,5f5e0ff,19f4b2,
-0x00A0   36 38 64 00 2B 73 6E 70-00 00 00 00 00 00 00 A2   68d.+snp.......¢
+0x00A0   36 38 64 00 2B 73 6E 70-00 00 00 00 00 00 00 A2   68d.+snp.......Â¢
 */
 						if (strncmp(buf + 2, "ap", 2) == 0) {
 							if (Verbose) {
@@ -8929,7 +8978,7 @@ S=1,wins_in_hex,loses_in_hex,
 									if (ind > 10) break;
 								}
 								break;
-							case 28:								
+							case 28:
 								std::sort(S1301.begin(), S1301.end(), sort_Points);
 								for (it3 = S1301.begin(); it3 != S1301.end(); it3++) {
 									sprintf(arr2[0], "N=%s", it3->Name);
@@ -9097,7 +9146,7 @@ S=1,wins_in_hex,loses_in_hex,
 
 						RegUser* tr = Server.ru.UserFromUsername(user->Username);
 						switch (l) {
-						
+
 						case 3:
 							memset(user->Personas[l], 0, 16);
 							memset(tr->Personas[l], 0, 16);
@@ -9170,7 +9219,7 @@ S=1,wins_in_hex,loses_in_hex,
 				msg = temp->IncomingMessages.RemoveFirstMessage();
 			}
 
-			temp=temp->Next;
+			temp = temp->Next;
 		}
 
 		ClientConnections.mut.Unlock();
@@ -9178,43 +9227,43 @@ S=1,wins_in_hex,loses_in_hex,
 	}
 };
 
-bool SendData(char *text, unsigned long ip) {
+bool SendData(char* text, unsigned long ip) {
 	SOCKADDR_IN remote_sockaddr_in;
 
 	remote_sockaddr_in.sin_family = AF_INET;
 	remote_sockaddr_in.sin_port = htons(10801);
 	remote_sockaddr_in.sin_addr.s_addr = ip;
 
-	return (sendto(ClientReportingSocket,text,strlen(text),0, (SOCKADDR *)&remote_sockaddr_in, sizeof(SOCKADDR_IN)) != SOCKET_ERROR);
+	return (sendto(ClientReportingSocket, text, strlen(text), 0, (SOCKADDR*)&remote_sockaddr_in, sizeof(SOCKADDR_IN)) != SOCKET_ERROR);
 };
 
-threadfunc ClientReporter(void *Dummy){
+threadfunc ClientReporter(void* Dummy) {
 	int status;
 	SOCKADDR_IN remote_sockaddr_in;
 	unsigned long remote_sockaddr_length = sizeof(SOCKADDR_IN);
 	char tempBuff[1024];
 
-	while(running){
+	while (running) {
 #ifndef _WIN32
-		status = recvfrom(ClientReportingSocket, tempBuff, 1024, 0, (SOCKADDR *)&remote_sockaddr_in,(socklen_t*) &remote_sockaddr_length);
+		status = recvfrom(ClientReportingSocket, tempBuff, 1024, 0, (SOCKADDR*)&remote_sockaddr_in, (socklen_t*)&remote_sockaddr_length);
 #else
-		status = recvfrom(ClientReportingSocket, tempBuff, 1024, 0, (SOCKADDR *)&remote_sockaddr_in,(int *) &remote_sockaddr_length);
+		status = recvfrom(ClientReportingSocket, tempBuff, 1024, 0, (SOCKADDR*)&remote_sockaddr_in, (int*)&remote_sockaddr_length);
 #endif
 		if (status == SOCKET_ERROR) {
 			sprintf(tempBuff, "Recvfrom failed @ ClientReporter.\nExiting ClientReporter thread - AutoFind feature won't be available till server is restarted!!!.\n");
 			Log(tempBuff);
 			closesocket(ClientReportingSocket);
 			RETURNFROMTHREAD;
-		}		
-		if(Verbose){
+		}
+		if (Verbose) {
 			sprintf(tempBuff, "Server finder connected from %s\n", inet_ntoa(remote_sockaddr_in.sin_addr));
 			Log(tempBuff);
 		}
 		sprintf(tempBuff, "%s", NFSU_LAN_VERSION);
 #ifdef _WIN32
-		if(!SendData(tempBuff, remote_sockaddr_in.sin_addr.S_un.S_addr)){
+		if (!SendData(tempBuff, remote_sockaddr_in.sin_addr.S_un.S_addr)) {
 #else
-		if(!SendData(tempBuff, remote_sockaddr_in.sin_addr.s_addr)){
+		if (!SendData(tempBuff, remote_sockaddr_in.sin_addr.s_addr)) {
 #endif
 			sprintf(tempBuff, "Could not send data to server finder: %s\n", inet_ntoa(remote_sockaddr_in.sin_addr));
 			Log(tempBuff);
@@ -9223,7 +9272,7 @@ threadfunc ClientReporter(void *Dummy){
 	closesocket(ClientReportingSocket);
 };
 
-threadfunc ClientReporterTcp(void *Dummy){
+threadfunc ClientReporterTcp(void* Dummy) {
 	SOCKET cl;
 	char tempBuff[1024];
 
@@ -9231,22 +9280,22 @@ threadfunc ClientReporterTcp(void *Dummy){
 	Log(tempBuff);
 
 	SOCKADDR_IN remote_sockaddr_in;
-	unsigned long remote_sockaddr_length = sizeof(SOCKADDR_IN);	
+	unsigned long remote_sockaddr_length = sizeof(SOCKADDR_IN);
 	int status;
 
-	while(running){
-		cl=accept(ClientReportingSocketTcp, NULL, NULL);
-		if(cl!=INVALID_SOCKET){
+	while (running) {
+		cl = accept(ClientReportingSocketTcp, NULL, NULL);
+		if (cl != INVALID_SOCKET) {
 #ifndef _WIN32
-			getpeername(cl, (SOCKADDR *)&remote_sockaddr_in,(socklen_t*) &remote_sockaddr_length);
+			getpeername(cl, (SOCKADDR*)&remote_sockaddr_in, (socklen_t*)&remote_sockaddr_length);
 #else
-			getpeername(cl, (SOCKADDR *)&remote_sockaddr_in,(int*) &remote_sockaddr_length);
+			getpeername(cl, (SOCKADDR*)&remote_sockaddr_in, (int*)&remote_sockaddr_length);
 #endif			
-			if(Verbose){
+			if (Verbose) {
 				sprintf(tempBuff, "Server finder connected from %s\n", inet_ntoa(remote_sockaddr_in.sin_addr));
 				Log(tempBuff);
 			}
-			status=(int)difftime(curtime, Server.Startup);
+			status = (int)difftime(curtime, Server.Startup);
 			sprintf(tempBuff, "%u|%u|%u|%s|%s|%s", ClientConnections.Count, Server.Rooms.Count, status, SERVER_PLATFORM, NFSU_LAN_VERSION, Server.Name);
 			send(cl, tempBuff, strlen(tempBuff), 0);
 			closesocket(cl);
@@ -9255,7 +9304,7 @@ threadfunc ClientReporterTcp(void *Dummy){
 	closesocket(ClientReportingSocketTcp);
 };
 
-threadfunc StatThread(void *Dummy){
+threadfunc StatThread(void* Dummy) {
 	SOCKET cl;
 	char tempBuff[1024];
 
@@ -9263,24 +9312,24 @@ threadfunc StatThread(void *Dummy){
 	Log(tempBuff);
 
 	SOCKADDR_IN remote_sockaddr_in;
-	unsigned long remote_sockaddr_length = sizeof(SOCKADDR_IN);	
+	unsigned long remote_sockaddr_length = sizeof(SOCKADDR_IN);
 	int status, ban_tj_cheat, players_in_race, ban_rooms_creation;
-	RoomClass *tr;
-	RUserClass *tu;
+	RoomClass* tr;
+	RUserClass* tu;
 
-	while(running){
-		cl=accept(ReportingSocket, NULL, NULL);
-		if(cl!=INVALID_SOCKET){
+	while (running) {
+		cl = accept(ReportingSocket, NULL, NULL);
+		if (cl != INVALID_SOCKET) {
 #ifndef _WIN32
-			getpeername(cl, (SOCKADDR *)&remote_sockaddr_in,(socklen_t*) &remote_sockaddr_length);
+			getpeername(cl, (SOCKADDR*)&remote_sockaddr_in, (socklen_t*)&remote_sockaddr_length);
 #else
-			getpeername(cl, (SOCKADDR *)&remote_sockaddr_in,(int*) &remote_sockaddr_length);
+			getpeername(cl, (SOCKADDR*)&remote_sockaddr_in, (int*)&remote_sockaddr_length);
 #endif			
-			if(Verbose){
+			if (Verbose) {
 				sprintf(tempBuff, "Stat client connected from %s\n", inet_ntoa(remote_sockaddr_in.sin_addr));
 				Log(tempBuff);
 			}
-			status=(int)difftime(curtime, Server.Startup);
+			status = (int)difftime(curtime, Server.Startup);
 
 			// ban TJ cheat status (0 - disabled / 1 - enabled)
 			if (BanCheater) {
@@ -9289,7 +9338,7 @@ threadfunc StatThread(void *Dummy){
 			else {
 				ban_tj_cheat = 0;
 			}
-			
+
 			// players in races count
 			players_in_race = Sessions.Count;
 
@@ -9304,18 +9353,18 @@ threadfunc StatThread(void *Dummy){
 			sprintf(tempBuff, "%u|%u|%u|%s|%s|%s|%u|%u|%u~~~", ClientConnections.Count, Server.Rooms.Count, status, SERVER_PLATFORM, NFSU_LAN_VERSION, Server.Name, ban_tj_cheat, players_in_race, ban_rooms_creation);
 			send(cl, tempBuff, strlen(tempBuff), 0);
 
-			tr=Server.Rooms.First;
-			while(tr!=NULL){
+			tr = Server.Rooms.First;
+			while (tr != NULL) {
 				sprintf(tempBuff, "%s|%u|[", tr->Name, tr->Users.Count);
 				send(cl, tempBuff, strlen(tempBuff), 0);
-				tu=tr->Users.First;
-				while(tu!=NULL){
+				tu = tr->Users.First;
+				while (tu != NULL) {
 					sprintf(tempBuff, "%s|", tu->User->Personas[tu->User->SelectedPerson]);
 					send(cl, tempBuff, strlen(tempBuff), 0);
-					tu=tu->Next;
+					tu = tu->Next;
 				}
 				send(cl, "]", 1, 0);
-				tr=tr->Next;
+				tr = tr->Next;
 			}
 			closesocket(cl);
 		}
@@ -9324,23 +9373,24 @@ threadfunc StatThread(void *Dummy){
 };
 
 //watches for timeouted clients
-threadfunc Maintenance(void *Dummy){
+threadfunc Maintenance(void* Dummy) {
 	Log("Maintenance thread started\n");
-	UserClass *user, *t;
-	while(running){
+	UserClass* user, * t;
+	while (running) {
 		Sleep(1000);
 		time(&curtime);
-		user=Server.Users.First;
-		while(user!=NULL){
+		user = Server.Users.First;
+		while (user != NULL) {
 			user->Idle++;
-			if((user->Idle>60*45)&&(user->Connection==NULL)){
+			if ((user->Idle > 60 * 45) && (user->Connection == NULL)) {
 				Log("Removing user due to 45 min timeout\n");
-				t=user->Next;
+				t = user->Next;
 				Server.Users.RemoveUser(user);
 				free(user);
-				user=t;
-			}else{
-				user=user->Next;
+				user = t;
+			}
+			else {
+				user = user->Next;
 			}
 		}
 	}
@@ -9348,73 +9398,73 @@ threadfunc Maintenance(void *Dummy){
 };
 
 #ifdef NT_SERVICE
-VOID WriteInLogFile( char *text )
+VOID WriteInLogFile(char* text)
 {
-    g_LogFile = fopen( "Service.log", "a+t" );
-    
-	if ( g_LogFile )
-    {
-        fprintf( g_LogFile, text );
-        fclose( g_LogFile );
-    }
-    
+	g_LogFile = fopen("Service.log", "a+t");
+
+	if (g_LogFile)
+	{
+		fprintf(g_LogFile, text);
+		fclose(g_LogFile);
+	}
+
 	return;
 }
 
 VOID WINAPI ServiceCtrlHandler(DWORD dwControl)
-{ 
-    sprintf(g_Msg, "In to service control...\n");
-    WriteInLogFile(g_Msg);
+{
+	sprintf(g_Msg, "In to service control...\n");
+	WriteInLogFile(g_Msg);
 
-    switch(dwControl) 
-    { 
-        case SERVICE_CONTROL_PAUSE: 
-            ServiceStatus.dwCurrentState = SERVICE_PAUSED; 
-            break; 
- 
-        case SERVICE_CONTROL_CONTINUE: 
-            ServiceStatus.dwCurrentState = SERVICE_RUNNING; 
-            break; 
- 
-        case SERVICE_CONTROL_STOP: 
-            sprintf(g_Msg, "Stopping...\n");
-            WriteInLogFile(g_Msg);
-            
-			ServiceStatus.dwWin32ExitCode = 0; 
-            ServiceStatus.dwCurrentState  = SERVICE_STOP_PENDING; 
-            ServiceStatus.dwCheckPoint    = 0; 
-            ServiceStatus.dwWaitHint      = 0; 
- 
-            running = false;
+	switch (dwControl)
+	{
+	case SERVICE_CONTROL_PAUSE:
+		ServiceStatus.dwCurrentState = SERVICE_PAUSED;
+		break;
 
-            if ( !SetServiceStatus( ServiceStatusHandle, &ServiceStatus) )
-            { 
-				sprintf(g_Msg,"NFSU:LAN SetServiceStatus() error %ld\n",GetLastError() ); 
-                WriteInLogFile(g_Msg);
-            } 
+	case SERVICE_CONTROL_CONTINUE:
+		ServiceStatus.dwCurrentState = SERVICE_RUNNING;
+		break;
 
-            sprintf(g_Msg, "NFSU:LAN leaving handler \n", 0 ); 
-            WriteInLogFile(g_Msg);
-            
-			return; 
- 
-        case SERVICE_CONTROL_INTERROGATE: 
-            break; 
- 
-        default: 
-            sprintf(g_Msg, "NFSU:LAN unrecognized control code %ld\n", dwControl ); 
-            WriteInLogFile(g_Msg);
-    } 
- 
-    // Send current status. 
-    if ( !SetServiceStatus(ServiceStatusHandle, &ServiceStatus) ) 
-    { 
-        sprintf(g_Msg,"NFSU:LAN SetServiceStatus() error %ld\n", GetLastError() ); 
-        WriteInLogFile( g_Msg );
-    } 
+	case SERVICE_CONTROL_STOP:
+		sprintf(g_Msg, "Stopping...\n");
+		WriteInLogFile(g_Msg);
 
-    return; 
-} 
+		ServiceStatus.dwWin32ExitCode = 0;
+		ServiceStatus.dwCurrentState = SERVICE_STOP_PENDING;
+		ServiceStatus.dwCheckPoint = 0;
+		ServiceStatus.dwWaitHint = 0;
+
+		running = false;
+
+		if (!SetServiceStatus(ServiceStatusHandle, &ServiceStatus))
+		{
+			sprintf(g_Msg, "NFSU:LAN SetServiceStatus() error %ld\n", GetLastError());
+			WriteInLogFile(g_Msg);
+		}
+
+		sprintf(g_Msg, "NFSU:LAN leaving handler \n", 0);
+		WriteInLogFile(g_Msg);
+
+		return;
+
+	case SERVICE_CONTROL_INTERROGATE:
+		break;
+
+	default:
+		sprintf(g_Msg, "NFSU:LAN unrecognized control code %ld\n", dwControl);
+		WriteInLogFile(g_Msg);
+	}
+
+	// Send current status. 
+	if (!SetServiceStatus(ServiceStatusHandle, &ServiceStatus))
+	{
+		sprintf(g_Msg, "NFSU:LAN SetServiceStatus() error %ld\n", GetLastError());
+		WriteInLogFile(g_Msg);
+	}
+
+	return;
+}
 #endif
 
 
@@ -9447,7 +9497,7 @@ void trim(char* s)
 	}
 }
 
-void readOptionStr(char const *key, char val[]) {
+void readOptionStr(char const* key, char val[]) {
 	int start_val = 0;
 	std::string::size_type i = 0;
 	size_t max_count;
@@ -9492,7 +9542,7 @@ void readOptionStr(char const *key, char val[]) {
 		trim(val);
 		// stop read when first occurence found
 		break;
-		next:;
+	next:;
 	}
 	infile.close();
 }
@@ -9504,7 +9554,7 @@ bool readOptionBool(char const* key) {
 }
 
 const char* roomIds = "ABCDEFGH";
-void addRooms(char *rooms, int roomId) {
+void addRooms(char* rooms, int roomId) {
 	char r[100];
 	r[0] = roomIds[roomId];
 	r[1] = '.';
@@ -9524,7 +9574,8 @@ void addRooms(char *rooms, int roomId) {
 	}
 }
 
-bool InitServer(){
+bool InitServer()
+{
 	char log[1024];
 
 	char rooms_a[64] = "LAN";
@@ -9535,10 +9586,10 @@ bool InitServer(){
 	char rooms_f[64] = "LAN";
 	char rooms_g[64] = "LAN";
 	char rooms_h[64] = "LAN";
-	
+
 	sprintf(log, "%s NFSU:LAN server v %s starting...\n", SERVER_PLATFORM, NFSU_LAN_VERSION);
 	Log(log);
-	
+
 	readOptionStr("ServerName", Server.Name);
 	readOptionStr("ServerIP", Server.ServerIP);
 	readOptionStr("ServerExternalIP", Server.ServerExternalIP);
@@ -9580,28 +9631,29 @@ bool InitServer(){
 	addRooms(rooms_h, 7);
 
 
-	if(Server.Name[0]==0){
+	if (Server.Name[0] == 0) {
 		strcpy(Server.Name, "Default server name");
 	}
 
 	//opening logfile
-	if(EnableLogFile){
-		if(RewriteLogFile){
-			logfil=fopen("server.log", "w");
-		}else{
-			logfil=fopen("server.log", "a");
+	if (EnableLogFile) {
+		if (RewriteLogFile) {
+			logfil = fopen("server.log", "w");
 		}
-		if(logfil==NULL){
-			EnableLogFile=false;
+		else {
+			logfil = fopen("server.log", "a");
+		}
+		if (logfil == NULL) {
+			EnableLogFile = false;
 			sprintf(log, "[error] Could not open logfile - logging to file will be disabled.\n");
 		}
 	}
-	
+
 	//opening logfile
-	if(LogAllTraffic){
-		tlogfil=fopen("traffic.log", "a");
-		if(tlogfil==NULL){
-			LogAllTraffic=false;
+	if (LogAllTraffic) {
+		tlogfil = fopen("traffic.log", "a");
+		if (tlogfil == NULL) {
+			LogAllTraffic = false;
 			sprintf(log, "[error] Could not open traffic logfile - logging to file will be disabled.\n");
 		}
 	}
@@ -9634,7 +9686,7 @@ bool InitServer(){
 	sprintf(log, "BanV4             %d\n", BanV4);				Log(log);
 	sprintf(log, "BanRoomsCreation  %d\n", BanRoomsCreation);	Log(log);
 	sprintf(log, "BanCheater        %d\n", BanCheater);			Log(log);
-						
+
 	sprintf(log, "-----------\n");				Log(log);
 	sprintf(log, "|  Rooms  |\n");				Log(log);
 	sprintf(log, "-----------\n");				Log(log);
@@ -9650,7 +9702,7 @@ bool InitServer(){
 
 #ifdef _WIN32
 	WSAData wda;
-	if(WSAStartup(MAKEWORD( 2, 2 ), &wda)!=0){
+	if (WSAStartup(MAKEWORD(2, 2), &wda) != 0) {
 		sprintf(log, "[error] Could not init winsocks.\n");
 		Log(log);
 		return false;
@@ -9658,25 +9710,26 @@ bool InitServer(){
 #endif
 
 	//making sockets
-	RedirectSocket = socket(AF_INET,SOCK_STREAM,0);
-	ListeningSocket = socket(AF_INET,SOCK_STREAM,0);
-	ReportingSocket = socket(AF_INET,SOCK_STREAM,0);
+	RedirectSocket = socket(AF_INET, SOCK_STREAM, 0);
+	ListeningSocket = socket(AF_INET, SOCK_STREAM, 0);
+	ReportingSocket = socket(AF_INET, SOCK_STREAM, 0);
 	ClientReportingSocket = socket(AF_INET, SOCK_DGRAM, 0);
-	ClientReportingSocketTcp =  socket(AF_INET, SOCK_STREAM, 0);
+	ClientReportingSocketTcp = socket(AF_INET, SOCK_STREAM, 0);
 
 	//binding them to specific ports
 	SOCKADDR_IN localsin;
 	localsin.sin_family = AF_INET;
 	if (Server.ServerIP[0] != '\0') {
 		inet_pton(AF_INET, Server.ServerIP, &(localsin.sin_addr));
-	}  else {
+	}
+	else {
 		localsin.sin_addr.s_addr = INADDR_ANY;
 	}
 
-	localsin.sin_port = htons(10900);
+	localsin.sin_port = htons(9900);
 	int k;
-	k=bind(RedirectSocket,(SOCKADDR *)&localsin, sizeof(SOCKADDR_IN));
-	if(k==INVALID_SOCKET){
+	k = bind(RedirectSocket, (SOCKADDR*)&localsin, sizeof(SOCKADDR_IN));
+	if (k == INVALID_SOCKET) {
 		sprintf(log, "[error] Could not bind socket to %s:%d.\n", inet_ntoa(localsin.sin_addr), ntohs(localsin.sin_port));
 		Log(log);
 		return false;
@@ -9685,8 +9738,8 @@ bool InitServer(){
 	Log(log);
 
 	localsin.sin_port = htons(10901);
-	k=bind(ListeningSocket,(SOCKADDR *)&localsin, sizeof(SOCKADDR_IN));
-	if(k==INVALID_SOCKET){
+	k = bind(ListeningSocket, (SOCKADDR*)&localsin, sizeof(SOCKADDR_IN));
+	if (k == INVALID_SOCKET) {
 		sprintf(log, "[error] Could not bind socket to %s:%d.\n", inet_ntoa(localsin.sin_addr), ntohs(localsin.sin_port));
 		Log(log);
 		closesocket(RedirectSocket);
@@ -9696,8 +9749,8 @@ bool InitServer(){
 	Log(log);
 
 	localsin.sin_port = htons(10980);
-	k=bind(ReportingSocket,(SOCKADDR *)&localsin, sizeof(SOCKADDR_IN));
-	if(k==INVALID_SOCKET){
+	k = bind(ReportingSocket, (SOCKADDR*)&localsin, sizeof(SOCKADDR_IN));
+	if (k == INVALID_SOCKET) {
 		sprintf(log, "[error] Could not bind socket to %s:%d.\n", inet_ntoa(localsin.sin_addr), ntohs(localsin.sin_port));
 		Log(log);
 		closesocket(RedirectSocket);
@@ -9708,8 +9761,8 @@ bool InitServer(){
 	Log(log);
 
 	localsin.sin_port = htons(10800);
-	k=bind(ClientReportingSocket,(SOCKADDR *)&localsin, sizeof(SOCKADDR_IN));
-	if(k==INVALID_SOCKET){
+	k = bind(ClientReportingSocket, (SOCKADDR*)&localsin, sizeof(SOCKADDR_IN));
+	if (k == INVALID_SOCKET) {
 		sprintf(log, "[error] Could not bind socket to %s:%d.\n", inet_ntoa(localsin.sin_addr), ntohs(localsin.sin_port));
 		Log(log);
 		closesocket(RedirectSocket);
@@ -9721,8 +9774,8 @@ bool InitServer(){
 	Log(log);
 
 	localsin.sin_port = htons(10800);
-	k=bind(ClientReportingSocketTcp,(SOCKADDR *)&localsin, sizeof(SOCKADDR_IN));
-	if(k==INVALID_SOCKET){
+	k = bind(ClientReportingSocketTcp, (SOCKADDR*)&localsin, sizeof(SOCKADDR_IN));
+	if (k == INVALID_SOCKET) {
 		sprintf(log, "[error] Could not bind socket to %s:%d.\n", inet_ntoa(localsin.sin_addr), ntohs(localsin.sin_port));
 		Log(log);
 		closesocket(RedirectSocket);
@@ -9748,16 +9801,16 @@ bool InitServer(){
 	//starting threads
 	ConAccParam Redirector, Listener, Reporter;
 
-	Redirector.Connections=&RedirectConnections;
-	Redirector.sock=RedirectSocket;
+	Redirector.Connections = &RedirectConnections;
+	Redirector.sock = RedirectSocket;
 	strcpy(Redirector.Name, "Redirector");
-	Listener.Connections=&ClientConnections;
-	Listener.sock=ListeningSocket;
+	Listener.Connections = &ClientConnections;
+	Listener.sock = ListeningSocket;
 	strcpy(Listener.Name, "Listener");
-	Reporter.Connections=&ReportingConnections;
-	Reporter.sock=ReportingSocket;
+	Reporter.Connections = &ReportingConnections;
+	Reporter.sock = ReportingSocket;
 	strcpy(Reporter.Name, "Reporter");
-	
+
 	_beginthread(AcceptThread, 0, (void*)&Listener);
 	_beginthread(AcceptThread, 0, (void*)&Redirector);
 	//_beginthread(AcceptThread, 0, (void*)&Reporter);
@@ -9775,13 +9828,13 @@ bool InitServer(){
 	_beginthread(ClientReporter, 0, NULL);
 	_beginthread(ClientReporterTcp, 0, NULL);
 	_beginthread(StatThread, 0, NULL);
-	if(RegisterGlobal)
+	if (RegisterGlobal)
 		_beginthread(WebReport, 0, NULL);
 
 	return true;
 }
 
-void DeInitServer(){
+void DeInitServer() {
 	char log[1024];
 	//closing sockets
 	closesocket(RedirectSocket);
@@ -9790,17 +9843,17 @@ void DeInitServer(){
 	closesocket(ClientReportingSocket);
 
 	free(news);
-	UserClass *tuser;
-	GameClass *tgame;
-	RoomClass *troom;
-	RegUser *treguser;
-	ConnectionClass *tcon;
+	UserClass* tuser;
+	GameClass* tgame;
+	RoomClass* troom;
+	RegUser* treguser;
+	ConnectionClass* tcon;
 
 
-	while(RedirectConnections.Count>0){
-		tcon=RedirectConnections.First;
+	while (RedirectConnections.Count > 0) {
+		tcon = RedirectConnections.First;
 		RedirectConnections.RemoveConnection(tcon);
-		if(tcon->user!=NULL) tcon->user->Connection=NULL;
+		if (tcon->user != NULL) tcon->user->Connection = NULL;
 		tcon->IncomingMessages.Clear();
 		tcon->OutgoingMessages.Clear();
 		tcon->IncomingMessages.mut.DeInit();
@@ -9808,40 +9861,40 @@ void DeInitServer(){
 		free(tcon);
 	}
 
-	while(Server.Users.Count>0) {
-		tuser=Server.Users.First;
+	while (Server.Users.Count > 0) {
+		tuser = Server.Users.First;
 		Server.Users.RemoveUser(tuser);
-		if(tuser->Game!=NULL){
-			tgame=tuser->Game;
+		if (tuser->Game != NULL) {
+			tgame = tuser->Game;
 			tgame->RemoveUser(tuser, log);
-			if(tgame->Count==0) {
+			if (tgame->Count == 0) {
 				tuser->CurrentRoom->Games.RemoveGame(tgame);
 				free(tgame);
 			}
 		}
-		if(tuser->CurrentRoom!=NULL){
-			troom=tuser->CurrentRoom;
+		if (tuser->CurrentRoom != NULL) {
+			troom = tuser->CurrentRoom;
 			troom->RemoveUser(tuser, log);
-			if(troom->Count==0){
+			if (troom->Count == 0) {
 				Server.Rooms.RemoveRoom(troom);
 				free(troom);
 			}
 		}
 		free(tuser);
 	}
-	while(Server.Rooms.Count>0){
-		troom=Server.Rooms.First;
+	while (Server.Rooms.Count > 0) {
+		troom = Server.Rooms.First;
 		Server.Rooms.RemoveRoom(troom);
 		free(troom);
 	}
-	while(Server.ru.Count>0){
-		treguser=Server.ru.First;
+	while (Server.ru.Count > 0) {
+		treguser = Server.ru.First;
 		Server.ru.RemoveUser(treguser);
 		free(treguser);
 	}
 
 	//closing logfile
-	if(logfil!=NULL) fclose(logfil);
+	if (logfil != NULL) fclose(logfil);
 
 #ifdef _WIN32
 	//unloading winsocks
@@ -9851,66 +9904,66 @@ void DeInitServer(){
 
 #ifdef NT_SERVICE
 // Second function to implement
-VOID WINAPI ServiceMain( DWORD argc, LPTSTR *argv ) 
-{ 
-//    DWORD status; 
-//    DWORD specificError; 
+VOID WINAPI ServiceMain(DWORD argc, LPTSTR * argv)
+{
+	//    DWORD status; 
+	//    DWORD specificError; 
 
-    ServiceStatus.dwServiceType        = SERVICE_WIN32_OWN_PROCESS; 
-    ServiceStatus.dwCurrentState       = SERVICE_START_PENDING; 
-    ServiceStatus.dwControlsAccepted   = SERVICE_ACCEPT_STOP; 
-    ServiceStatus.dwWin32ExitCode      = 0; 
-    ServiceStatus.dwServiceSpecificExitCode = 0; 
-    ServiceStatus.dwCheckPoint         = 0; 
-    ServiceStatus.dwWaitHint           = 0; 
- 
-    ServiceStatusHandle = RegisterServiceCtrlHandler( "NFSU:LAN", ServiceCtrlHandler ); 
- 
-    if ( ServiceStatusHandle == (SERVICE_STATUS_HANDLE) 0 ) 
-    { 
-        sprintf(g_Msg, "NFSU:LAN RegisterServiceCtrlHandler() failed %d\n", GetLastError() ); 
-        WriteInLogFile( g_Msg );
-        return; 
-    } 
- 
-//    status = ServiceInitialization( argc, argv, &specificError ); 
-//    if ( status != NO_ERROR ) 
-//    { 
-//        ServiceStatus.dwCurrentState       = SERVICE_STOPPED; 
-//        ServiceStatus.dwCheckPoint         = 0; 
-//        ServiceStatus.dwWaitHint           = 0; 
-//        ServiceStatus.dwWin32ExitCode      = status; 
-//        ServiceStatus.dwServiceSpecificExitCode = specificError; 
-// 
-//        SetServiceStatus( ServiceStatusHandle, &ServiceStatus ); 
-//        return; 
-//    } 
+	ServiceStatus.dwServiceType = SERVICE_WIN32_OWN_PROCESS;
+	ServiceStatus.dwCurrentState = SERVICE_START_PENDING;
+	ServiceStatus.dwControlsAccepted = SERVICE_ACCEPT_STOP;
+	ServiceStatus.dwWin32ExitCode = 0;
+	ServiceStatus.dwServiceSpecificExitCode = 0;
+	ServiceStatus.dwCheckPoint = 0;
+	ServiceStatus.dwWaitHint = 0;
 
-    ServiceStatus.dwCurrentState       = SERVICE_START_PENDING; 
-    ServiceStatus.dwCheckPoint         = 0; 
-    ServiceStatus.dwWaitHint           = 0; 
- 
-    if ( !SetServiceStatus( ServiceStatusHandle, &ServiceStatus ) ) 
-    { 
-        sprintf( g_Msg,"NFSU:LAN SetServiceStatus() error %ld\n", GetLastError() ); 
-        WriteInLogFile(g_Msg);
-    } 
+	ServiceStatusHandle = RegisterServiceCtrlHandler("NFSU:LAN", ServiceCtrlHandler);
 
-    running = InitServer();
+	if (ServiceStatusHandle == (SERVICE_STATUS_HANDLE)0)
+	{
+		sprintf(g_Msg, "NFSU:LAN RegisterServiceCtrlHandler() failed %d\n", GetLastError());
+		WriteInLogFile(g_Msg);
+		return;
+	}
 
-	if(running){
-		sprintf( g_Msg, "Just before processing Loop...\n" );
+	//    status = ServiceInitialization( argc, argv, &specificError ); 
+	//    if ( status != NO_ERROR ) 
+	//    { 
+	//        ServiceStatus.dwCurrentState       = SERVICE_STOPPED; 
+	//        ServiceStatus.dwCheckPoint         = 0; 
+	//        ServiceStatus.dwWaitHint           = 0; 
+	//        ServiceStatus.dwWin32ExitCode      = status; 
+	//        ServiceStatus.dwServiceSpecificExitCode = specificError; 
+	// 
+	//        SetServiceStatus( ServiceStatusHandle, &ServiceStatus ); 
+	//        return; 
+	//    } 
+
+	ServiceStatus.dwCurrentState = SERVICE_START_PENDING;
+	ServiceStatus.dwCheckPoint = 0;
+	ServiceStatus.dwWaitHint = 0;
+
+	if (!SetServiceStatus(ServiceStatusHandle, &ServiceStatus))
+	{
+		sprintf(g_Msg, "NFSU:LAN SetServiceStatus() error %ld\n", GetLastError());
+		WriteInLogFile(g_Msg);
+	}
+
+	running = InitServer();
+
+	if (running) {
+		sprintf(g_Msg, "Just before processing Loop...\n");
 		WriteInLogFile(g_Msg);
 
-		ServiceStatus.dwCurrentState       = SERVICE_RUNNING; 
-		ServiceStatus.dwCheckPoint         = 0; 
-		ServiceStatus.dwWaitHint           = 0; 
-	 
-		if ( !SetServiceStatus( ServiceStatusHandle, &ServiceStatus ) ) 
-		{ 
-			sprintf( g_Msg,"NFSU:LAN SetServiceStatus() error %ld\n", GetLastError() ); 
+		ServiceStatus.dwCurrentState = SERVICE_RUNNING;
+		ServiceStatus.dwCheckPoint = 0;
+		ServiceStatus.dwWaitHint = 0;
+
+		if (!SetServiceStatus(ServiceStatusHandle, &ServiceStatus))
+		{
+			sprintf(g_Msg, "NFSU:LAN SetServiceStatus() error %ld\n", GetLastError());
 			WriteInLogFile(g_Msg);
-		} 
+		}
 
 
 		while (running)
@@ -9919,22 +9972,22 @@ VOID WINAPI ServiceMain( DWORD argc, LPTSTR *argv )
 		}
 		DeInitServer();
 	}
- 
-    ServiceStatus.dwCurrentState = SERVICE_STOPPED; 
-    
+
+	ServiceStatus.dwCurrentState = SERVICE_STOPPED;
+
 	// Send current status. 
-    if (!SetServiceStatus(ServiceStatusHandle, &ServiceStatus)) 
-    { 
-        sprintf(g_Msg,"HelloService! SetServiceStatus error %ld\n", GetLastError() ); 
-        WriteInLogFile( g_Msg );
-    } 
- 
-    return; 
-} 
+	if (!SetServiceStatus(ServiceStatusHandle, &ServiceStatus))
+	{
+		sprintf(g_Msg, "HelloService! SetServiceStatus error %ld\n", GetLastError());
+		WriteInLogFile(g_Msg);
+	}
+
+	return;
+}
 #endif
 
 
-int main(int argc, char* argv[]){
+int main(int argc, char* argv[]) {
 
 #ifdef WIN32
 	WCHAR path[MAX_PATH];
@@ -9953,119 +10006,122 @@ int main(int argc, char* argv[]){
 	SetCurrentDirectoryW(path);
 #endif
 
-	for(int k=0;k<30;k++) arr[k]=(char*)&arr2[k];
+	for (int k = 0; k < 30; k++) arr[k] = (char*)&arr2[k];
 #ifdef NT_SERVICE	
-//	The SERVICE_TABLE_ENTRY structure is used by the StartServiceCtrlDispatcher function
-//	to specify the ServiceMain function for a service that can run in the calling process.
+	//	The SERVICE_TABLE_ENTRY structure is used by the StartServiceCtrlDispatcher function
+	//	to specify the ServiceMain function for a service that can run in the calling process.
 
 	SERVICE_TABLE_ENTRY DispatchTable[] = { { "NFSU:LAN", ServiceMain }, { 0, 0 } };
 
-    sprintf( g_Msg, "Log opened\n" );
-    WriteInLogFile( g_Msg );
+	sprintf(g_Msg, "Log opened\n");
+	WriteInLogFile(g_Msg);
 
 	// Install a Service if -i switch used
-    if ( argc > 1 && !( stricmp(argv[1], "-i") ) )
+	if (argc > 1 && !(stricmp(argv[1], "-i")))
 	{
-        char szBuffer[255];
-        char szPath[MAX_PATH];
+		char szBuffer[255];
+		char szPath[MAX_PATH];
 
-        sprintf( g_Msg, "First Calling OpenSCManager() \n");
-        WriteInLogFile( g_Msg );
+		sprintf(g_Msg, "First Calling OpenSCManager() \n");
+		WriteInLogFile(g_Msg);
 
-//		The OpenSCManager function establishes a connection to the Service Control Manager(SCM) 
-//		on the specified computer and opens the specified service control manager database. 
+		//		The OpenSCManager function establishes a connection to the Service Control Manager(SCM) 
+		//		on the specified computer and opens the specified service control manager database. 
 
-        SC_HANDLE scmHandle = OpenSCManager ( NULL, NULL, SC_MANAGER_ALL_ACCESS );
+		SC_HANDLE scmHandle = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
 
-        if (scmHandle == NULL) // Perform error handling.
-        {
-            sprintf( g_Msg, "NFSU:LAN OpenSCManager error = %d\n", GetLastError() ); 
-            WriteInLogFile(g_Msg);
-        }
+		if (scmHandle == NULL) // Perform error handling.
+		{
+			sprintf(g_Msg, "NFSU:LAN OpenSCManager error = %d\n", GetLastError());
+			WriteInLogFile(g_Msg);
+		}
 
-        GetModuleFileName( GetModuleHandle(NULL), szPath, MAX_PATH );
-        
-        strcpy( szBuffer, "\"" );
-        strcat( szBuffer, szPath );
-        strcat( szBuffer, "\"" );
- 
+		GetModuleFileName(GetModuleHandle(NULL), szPath, MAX_PATH);
+
+		strcpy(szBuffer, "\"");
+		strcat(szBuffer, szPath);
+		strcat(szBuffer, "\"");
+
 		//printf( "\n CreateService()! Installing Service %s\n", szPath );
 
-        SC_HANDLE scHandle;
-		scHandle = CreateService (
-			scmHandle, 
-			"NFSU:LAN", 
-            "NFSU:LAN", 
-			SERVICE_ALL_ACCESS, 
-            SERVICE_WIN32_OWN_PROCESS, 
-            SERVICE_AUTO_START, 
-            SERVICE_ERROR_NORMAL, 
-            szBuffer, NULL, NULL, NULL, NULL, NULL );
+		SC_HANDLE scHandle;
+		scHandle = CreateService(
+			scmHandle,
+			"NFSU:LAN",
+			"NFSU:LAN",
+			SERVICE_ALL_ACCESS,
+			SERVICE_WIN32_OWN_PROCESS,
+			SERVICE_AUTO_START,
+			SERVICE_ERROR_NORMAL,
+			szBuffer, NULL, NULL, NULL, NULL, NULL);
 
-        if ( scHandle == NULL ) // Process error
-        {
-            sprintf(g_Msg, "NFSU:LAN CreateService error = %d\n", GetLastError() ); 
-            WriteInLogFile(g_Msg);
-		}else{
+		if (scHandle == NULL) // Process error
+		{
+			sprintf(g_Msg, "NFSU:LAN CreateService error = %d\n", GetLastError());
+			WriteInLogFile(g_Msg);
+		}
+		else {
 			printf("NFSU:LAN service installed...");
 		}
 
-        CloseServiceHandle(scHandle);
-        CloseServiceHandle(scmHandle);
+		CloseServiceHandle(scHandle);
+		CloseServiceHandle(scmHandle);
 
-    }
-    else if ( argc > 1 && !( stricmp(argv[1], "-u" ) ) ) // Uninstall the Service
-    {
-        SC_HANDLE scmHandle = OpenSCManager (NULL, NULL, SC_MANAGER_ALL_ACCESS);
+	}
+	else if (argc > 1 && !(stricmp(argv[1], "-u"))) // Uninstall the Service
+	{
+		SC_HANDLE scmHandle = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
 
-        if (scmHandle == NULL) // Perform error handling.
-        {
-            sprintf(g_Msg, "NFSU:LAN OpenSCManager error = %d\n", GetLastError() ); 
-            WriteInLogFile(g_Msg);
-        }
-   
+		if (scmHandle == NULL) // Perform error handling.
+		{
+			sprintf(g_Msg, "NFSU:LAN OpenSCManager error = %d\n", GetLastError());
+			WriteInLogFile(g_Msg);
+		}
+
 		SC_HANDLE scHandle;
-        scHandle = OpenService( scmHandle, "NFSU:LAN", SERVICE_ALL_ACCESS );
-		if(DeleteService( scHandle )!=0){
-	        printf("NFSU:LAN service uninstalled...");
-		}else{
-			switch(GetLastError()){
-				case ERROR_ACCESS_DENIED:
-					printf("Access denied\n");
-					break;
-				case ERROR_INVALID_HANDLE:
-					printf("Invalid handle\n");
-					break;
-				case ERROR_SERVICE_MARKED_FOR_DELETE:
-					printf("The specified service has already been marked for deletion.");
-					break;
-				default:
-					printf("Error\n");
-					break;
+		scHandle = OpenService(scmHandle, "NFSU:LAN", SERVICE_ALL_ACCESS);
+		if (DeleteService(scHandle) != 0) {
+			printf("NFSU:LAN service uninstalled...");
+		}
+		else {
+			switch (GetLastError()) {
+			case ERROR_ACCESS_DENIED:
+				printf("Access denied\n");
+				break;
+			case ERROR_INVALID_HANDLE:
+				printf("Invalid handle\n");
+				break;
+			case ERROR_SERVICE_MARKED_FOR_DELETE:
+				printf("The specified service has already been marked for deletion.");
+				break;
+			default:
+				printf("Error\n");
+				break;
 			}
 		}
-    }
-    else
-    {
+	}
+	else
+	{
 		SC_HANDLE scHandle;
 
-		SC_HANDLE scmHandle = OpenSCManager (NULL, NULL, SC_MANAGER_ALL_ACCESS);
-        scHandle = OpenService( scmHandle, "NFSU:LAN", SERVICE_ALL_ACCESS );
+		SC_HANDLE scmHandle = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
+		scHandle = OpenService(scmHandle, "NFSU:LAN", SERVICE_ALL_ACCESS);
 
-		if(scHandle){
+		if (scHandle) {
 			CloseHandle(scHandle);
-			if ( !StartServiceCtrlDispatcher(DispatchTable) ) 
-			{ 
+			if (!StartServiceCtrlDispatcher(DispatchTable))
+			{
 				//ghmm smth wrong
 				printf("To install service use param -i\nTo uninstall service use param -u\n");
 			}
-		}else{
+		}
+		else {
 			//service is not installed but is started without params
 			printf("To install service use param -i\nTo uninstall service use param -u\n");
 		}
-    } 
+	}
 
-    return 0;
+	return 0;
 #endif
 
 #ifndef _WIN32
@@ -10088,55 +10144,55 @@ int main(int argc, char* argv[]){
 	BanCheater = false;
 
 #ifndef _WIN32
-	bool daemon=false;
-	bool writepid=false;
+	bool daemon = false;
+	bool writepid = false;
 #endif
 
 	//parse commandline
-	for(int k=1;k<argc;k++){
+	for (int k = 1; k < argc; k++) {
 #ifndef _WIN32
-		if(stricmp(argv[k], "-d")==0){
-			daemon=true;
+		if (stricmp(argv[k], "-d") == 0) {
+			daemon = true;
 		}
-		if(stricmp(argv[k], "-p")==0){
-			writepid=true;
+		if (stricmp(argv[k], "-p") == 0) {
+			writepid = true;
 		}
 #endif
-		if(stricmp(argv[k], "enablelogfile")==0){
-			EnableLogFile=true;
+		if (stricmp(argv[k], "enablelogfile") == 0) {
+			EnableLogFile = true;
 		}
-		if(stricmp(argv[k], "registerglobal")==0){
-			RegisterGlobal=true;
+		if (stricmp(argv[k], "registerglobal") == 0) {
+			RegisterGlobal = true;
 		}
-		if(stricmp(argv[k], "verbose")==0){
-			Verbose=true;
+		if (stricmp(argv[k], "verbose") == 0) {
+			Verbose = true;
 		}
-		if(stricmp(argv[k], "disablelogscreen")==0){
-			EnableLogScreen=false;
+		if (stricmp(argv[k], "disablelogscreen") == 0) {
+			EnableLogScreen = false;
 		}
-		if(stricmp(argv[k], "rewritelogfile")==0){
-			RewriteLogFile=true;
+		if (stricmp(argv[k], "rewritelogfile") == 0) {
+			RewriteLogFile = true;
 		}
-		if(stricmp(argv[k], "disabletimestamp")==0){
-			DisableTimeStamp=true;
+		if (stricmp(argv[k], "disabletimestamp") == 0) {
+			DisableTimeStamp = true;
 		}
-		if(strstr(argv[k], "servername=")!=NULL){
-			strncpy(Server.Name, strstr(argv[k], "servername=")+11, 99);
+		if (strstr(argv[k], "servername=") != NULL) {
+			strncpy(Server.Name, strstr(argv[k], "servername=") + 11, 99);
 		}
-		if(stricmp(argv[k], "logalltraffic")==0){
-			LogAllTraffic=true;
+		if (stricmp(argv[k], "logalltraffic") == 0) {
+			LogAllTraffic = true;
 		}
-		if(stricmp(argv[k], "banv1")==0){
-			BanV1=true;
+		if (stricmp(argv[k], "banv1") == 0) {
+			BanV1 = true;
 		}
-		if(stricmp(argv[k], "banv2")==0){
-			BanV2=true;
+		if (stricmp(argv[k], "banv2") == 0) {
+			BanV2 = true;
 		}
-		if(stricmp(argv[k], "banv3")==0){
-			BanV3=true;
+		if (stricmp(argv[k], "banv3") == 0) {
+			BanV3 = true;
 		}
-		if(stricmp(argv[k], "banv4")==0){
-			BanV4=true;
+		if (stricmp(argv[k], "banv4") == 0) {
+			BanV4 = true;
 		}
 		if (stricmp(argv[k], "banrooms") == 0) {
 			BanRoomsCreation = true;
@@ -10147,35 +10203,39 @@ int main(int argc, char* argv[]){
 	}
 
 #ifndef _WIN32
-	if(daemon){
+	if (daemon)
+	{
 		//diable output to console in deamon mode
-		EnableLogScreen=false;
+		EnableLogScreen = false;
 		/* Ignore terminal I/O signals */
 		signal(SIGTTOU, SIG_IGN);
-	    	signal(SIGTTIN, SIG_IGN);
-	    	signal(SIGTSTP, SIG_IGN);
+		signal(SIGTTIN, SIG_IGN);
+		signal(SIGTSTP, SIG_IGN);
 		int pid;
 		pid = fork();
-		if (pid != 0)
-			exit(0); /* this is the parent process here, so let's exit it for our daemon work */
+		if (pid != 0) exit(0); /* this is the parent process here, so let's exit it for our daemon work */
 		setsid(); /* child process, so let's make us a session leader, and lose control tty */
 		signal(SIGHUP, SIG_IGN); /* SIGHUP will be sent to child process so ignore it */
-		if (pid != 0)
-			exit(0);
+		if (pid != 0) exit(0);
 
-		if(writepid){
-			FILE *pidfile=fopen("nfsuserver.pid", "w");
-			if(pidfile!=NULL){
+		if (writepid)
+		{
+			FILE* pidfile = fopen("nfsuserver.pid", "w");
+			if (pidfile != NULL)
+			{
 				char pi[100];
 				sprintf(pi, "%u", getpid());
 				fwrite(pi, strlen(pi), sizeof(char), pidfile);
 				fclose(pidfile);
 			}
 		}
-	}	
+	}
 #endif
-	if(InitServer()){
-		while(running){
+
+	if (InitServer())
+	{
+		while (running)
+		{
 			Sleep(10);
 		}
 	}

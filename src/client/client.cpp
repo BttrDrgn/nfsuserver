@@ -12,7 +12,7 @@
 #include <malloc.h>
 #include "resource.h"
 #include "servers.h"
-#include "..\nfsuserver\objects.h"
+#include "objects.h"
 #include <Tlhelp32.h>
 
 ClServersClass Servers;
@@ -37,23 +37,26 @@ void RunSpeed() {
 	//HKEY_LOCAL_MACHINE\SOFTWARE\EA GAMES\Need For Speed Underground
 	HKEY hKey;
 
-	if (RegOpenKeyEx (HKEY_LOCAL_MACHINE, "SOFTWARE\\EA GAMES\\Need For Speed Underground", 0, KEY_QUERY_VALUE,
-					  &hKey) == ERROR_SUCCESS) {
+	if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, "SOFTWARE\\EA GAMES\\Need For Speed Underground", 0, KEY_QUERY_VALUE, &hKey) == ERROR_SUCCESS)
+	{
 		char buf[1024];
 		DWORD len = 1024;
 
-		if (RegQueryValueEx (hKey, "Install Dir", NULL, NULL, (LPBYTE)buf, &len) == ERROR_SUCCESS) {
+		if (RegQueryValueExA(hKey, "Install Dir", NULL, NULL, (LPBYTE)buf, &len) == ERROR_SUCCESS)
+		{
 			//strcat(buf, "speed.exe");
-			if ((int)ShellExecute (0, "open", "Speed.exe", NULL, buf, SW_SHOW) < 33) {
+			if ((int)ShellExecuteA(0, "open", "Speed.exe", NULL, buf, SW_SHOW) < 33)
+			{
 				sprintf (buf, "ShellExecute error: %u", GetLastError ());
-				MessageBox (0, buf, "Error", MB_OK);
+				MessageBoxA(0, buf, "Error", MB_OK);
 			}
 		}
 		RegCloseKey (hKey);
 	}
 } ;
 
-char *strstri( char *s1, char *s2 ) {
+const char* strstri(const char* s1, const char* s2 )
+{
 	int i, j, k;
 
 	for (i = 0; s1[i]; i++)
@@ -65,23 +68,27 @@ char *strstri( char *s1, char *s2 ) {
 
 bool IsSpeedOnline() {
 	PROCESSENTRY32 proc;
-	proc.dwSize = sizeof (PROCESSENTRY32);
+	proc.dwSize = sizeof(PROCESSENTRY32);
 	HANDLE snapshot;
 
 	snapshot = CreateToolhelp32Snapshot (TH32CS_SNAPPROCESS, 0);
 
 	Process32First (snapshot, &proc);
 
-	if (strstri (proc.szExeFile, "speed.exe")) {
+	if (strstri(proc.szExeFile, "speed.exe"))
+	{
 		CloseHandle (snapshot);
 		return true;
 	}
 
-	while (TRUE == Process32Next (snapshot, &proc))
-		if (strstri (proc.szExeFile, "speed.exe")) {
-			CloseHandle (snapshot);
+	while (TRUE == Process32Next(snapshot, &proc))
+	{
+		if (strstri(proc.szExeFile, "speed.exe"))
+		{
+			CloseHandle(snapshot);
 			return true;
 		}
+	}
 
 	CloseHandle (snapshot);
 	return false;
@@ -93,15 +100,19 @@ void ClearHosts() {
 	char * out;
 	fil = fopen (fname, "r");
 
-	if (fil != NULL) {
+	if (fil != NULL)
+	{
 		fseek (fil, 0, SEEK_END);
 		int fsiz = ftell (fil);
 		fseek (fil, 0, SEEK_SET);
 		out = (char *)calloc (fsiz + 1024, sizeof (char));
 
-		while (!feof (fil)) {
-			if (fgets (buf, 1024, fil) != NULL) {
-				if (strstr (buf, "ps2nfs04.ea.com") == NULL) {
+		while (!feof (fil))
+		{
+			if (fgets (buf, 1024, fil) != NULL)
+			{
+				if (strstr (buf, "ps2nfs04.ea.com") == NULL)
+				{
 					strcat (out, buf);
 				}
 			}
@@ -110,19 +121,23 @@ void ClearHosts() {
 		fclose (fil);
 		fil = fopen (fname, "w");
 
-		if (fil != NULL) {
+		if (fil != NULL)
+		{
 			fwrite (out, 1, strlen (out), fil);
 			fclose (fil);
-		} else {
+		}
+		else
+		{
 			char buf[1000];
 			sprintf (buf, "Could not write hosts file. Make sure that %s is writable", fname);
-			MessageBox (0, buf, "Error", MB_OK);
+			MessageBoxA(0, buf, "Error", MB_OK);
 		}
 		free (out);
 	}
 } ;
 
-bool WriteHosts() {
+bool WriteHosts()
+{
 	CurrentServer->Update ();
 
 	if (!CurrentServer->IsOnline) return false;
@@ -140,34 +155,43 @@ bool WriteHosts() {
 		fseek (fil, 0, SEEK_SET);
 		out = (char *)calloc (fsiz + 1024, sizeof (char));
 
-		while (!feof (fil)) {
-			if (fgets (buf, 1024, fil) != NULL) {
-				if (strstr (buf, "ps2nfs04.ea.com") == NULL) {
+		while (!feof (fil))
+		{
+			if (fgets (buf, 1024, fil) != NULL)
+			{
+				if (strstr (buf, "ps2nfs04.ea.com") == NULL)
+				{
 					strcat (out, buf);
 				}
 			}
 		}
 		fclose (fil);
-	} else {
+	}
+	else
+	{
 		out = (char *)calloc (1024, sizeof (char));
 	}
 
 	char tm[1024];
-	memset (tm, 0, 1024);
-	GetDlgItemText (dwnd, IDC_IP, tm, 1024);
+	memset(tm, 0, 1024);
+	GetDlgItemTextA(dwnd, IDC_IP, tm, 1024);
 
-	if(RedirectSocket==INVALID_SOCKET){		
+	if(RedirectSocket==INVALID_SOCKET)
+	{
 		struct in_addr addr;
 		addr.S_un.S_addr = CurrentServer->ip;
 		strcpy (tm, inet_ntoa (addr));
 		sprintf(buf, "%s\tps2nfs04.ea.com", tm);
-	}else{
+	}
+	else
+	{
 		strcpy (buf, "127.0.0.1\tps2nfs04.ea.com");
 	}
 	strcat (out, buf);
 	fil = fopen (fname, "w");
 
-	if (fil != NULL) {
+	if (fil != NULL)
+	{
 		fwrite (out, 1, strlen (out), fil);
 		fclose (fil);
 		free (out);
@@ -185,14 +209,14 @@ bool WriteHosts() {
 				if(strcmp(tm, inet_ntoa(remote_sockaddr_in.sin_addr))==0){
 					return true;
 				}else{
-					MessageBox(dwnd, "ps2nfs04.ea.com didnt resolved as expected. Check hosts file.", "Error", MB_OK);
+					MessageBoxA(dwnd, "ps2nfs04.ea.com didnt resolved as expected. Check hosts file.", "Error", MB_OK);
 					return false;
 				}
 			}else{
 				if(strcmp("127.0.0.1", inet_ntoa(remote_sockaddr_in.sin_addr))==0){
 					return true;
 				}else{
-					MessageBox(dwnd, "ps2nfs04.ea.com didnt resolved as expected. Check hosts file.", "Error", MB_OK);
+					MessageBoxA(dwnd, "ps2nfs04.ea.com didnt resolved as expected. Check hosts file.", "Error", MB_OK);
 					return false;
 				}
 			}
@@ -205,13 +229,14 @@ bool WriteHosts() {
 	} else {
 		char buf[1000];
 		sprintf (buf, "Could not write hosts file. Make sure that %s is writable", fname);
-		MessageBox (0, buf, "Error", MB_OK);
+		MessageBoxA(0, buf, "Error", MB_OK);
 		free (out);
 		return false;
 	}
 } ;
 
-bool SendData( char *text ) {
+bool SendData( const char* text )
+{
 	SOCKADDR_IN remote_sockaddr_in;
 	remote_sockaddr_in.sin_family = AF_INET;
 	remote_sockaddr_in.sin_port = htons (10800);
@@ -267,12 +292,12 @@ void ListenerThread( void *dummy ) {
 					//ignore
 					break;
 				case WSAEINVAL:
-					MessageBox (0, "Invalid args to recvfrom", "Error", MB_OK);
+					MessageBoxA(0, "Invalid args to recvfrom", "Error", MB_OK);
 					closesocket (listenerSocket);
 					return;
 				default:
 					sprintf (tempBuff, "Socket error: %u", WSAGetLastError ());
-					MessageBox (0, tempBuff, "Error", MB_OK);
+					MessageBoxA(0, tempBuff, "Error", MB_OK);
 			}
 		} else {
 			tmp = Servers.ServerFromIP (remote_sockaddr_in.sin_addr.S_un.S_addr);
@@ -289,7 +314,8 @@ void ListenerThread( void *dummy ) {
 	closesocket (listenerSocket);
 } ;
 
-BOOL CALLBACK DlgAdd( HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam ) {
+INT_PTR CALLBACK DlgAdd( HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
+{
 	ClServerClass * temp;
 
 	switch (uMsg) {
@@ -357,12 +383,14 @@ void updw( void *dummy ) {
 	EnableWindow (GetDlgItem (dwnd, IDC_GETLIST), true);
 } ;
 
-BOOL CALLBACK MainDlgProc( HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam ) {
+INT_PTR CALLBACK MainDlgProc( HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam )
+{
 	LPNMHDR pnf;
 	LV_ITEM it;
 	LPNMITEMACTIVATE lit;
 
-	switch (uMsg) {
+	switch (uMsg)
+	{
 		case WM_CLOSE:
 			ClearHosts ();
 			PostQuitMessage (0);
@@ -391,10 +419,10 @@ BOOL CALLBACK MainDlgProc( HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 					_beginthread (updw, 0, NULL);
 					break;
 				case IDC_FIND:
-					SendData ("nfs:u");
+					SendData("nfs:u");
 					break;
 				case IDC_ADD:
-					DialogBox (hinst, MAKEINTRESOURCE (IDD_ADD), dwnd, &DlgAdd);
+					DialogBoxA(hinst, MAKEINTRESOURCE (IDD_ADD), dwnd, &DlgAdd);
 					break;
 				case IDC_DELETE:
 					Servers.RemoveServer (CurrentServer);
@@ -434,17 +462,17 @@ BOOL CALLBACK MainDlgProc( HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 			memset (&LvCol, 0, sizeof (LvCol));
 			LvCol.mask = LVCF_TEXT | LVCF_WIDTH | LVCF_SUBITEM;                         // Type of mask
 			LvCol.cx = 245;                                                             // width between each coloum
-			LvCol.pszText = "Server";                                                   // First Header Text
+			LvCol.pszText = (LPSTR)"Server";                                                   // First Header Text
 			hList = GetDlgItem (dwnd, IDC_SERVERLIST);
 			SendMessage (hList, LVM_SETEXTENDEDLISTVIEWSTYLE, 0, LVS_EX_FULLROWSELECT); // Set style
 
 			SendMessage (hList, LVM_INSERTCOLUMN, 0, (LPARAM)&LvCol);                   // Insert/Show the coloum
 
 			LvCol.cx = 100;                                                             // width between each coloum
-			LvCol.pszText = "Status";                                                   // Next coloum
+			LvCol.pszText = (LPSTR)"Status";                                                   // Next coloum
 			SendMessage (hList, LVM_INSERTCOLUMN, 1, (LPARAM)&LvCol);                   // ...
 			LvCol.cx = 50;
-			LvCol.pszText = "P/R";                                                      //
+			LvCol.pszText = (LPSTR)"P/R";                                                      //
 			SendMessage (hList, LVM_INSERTCOLUMN, 2, (LPARAM)&LvCol);                   // ...
 			//IDC_SERVERLIST
 
@@ -486,7 +514,8 @@ void StartListener() {
 	}
 }
 
-threadfunc AcceptThread( void *Dummy ) {
+threadfunc AcceptThread( void *Dummy )
+{
 	SOCKET cl;
 	char log[1024];
 
@@ -531,7 +560,8 @@ threadfunc AcceptThread( void *Dummy ) {
 	}
 } ;
 
-threadfunc IOThread( void *Dummy ) {
+threadfunc IOThread( void *Dummy )
+{
 	char log[1024];
 	MessageClass * msg;
 	ConnectionClass * temp;
@@ -541,8 +571,8 @@ threadfunc IOThread( void *Dummy ) {
 	timeval tim;
 	tim.tv_sec = 0;
 	tim.tv_usec = 100;
-	GameClass * Game;
-	RoomClass * Room;
+	GameClass* Game;
+	RoomClass* Room;
 
 	while (true) {
 		temp = con->First;
@@ -665,7 +695,7 @@ threadfunc RedirectorWorker( void *Dummy ) {
 					sprintf (arr2[1], "PORT=10901");
 					sprintf (arr2[2], "SESS=1072010288");
 					sprintf (arr2[3], "MASK=0295f3f70ecb1757cd7001b9a7a5eac8");
-					k = MakeCommand (buffer, "@dir", arr, 4);
+					k = MakeCommand(buffer, "@dir", arr, 4);
 					tmsg = (MessageClass *)calloc (1, sizeof (MessageClass));
 					tmsg->Message = (char *)calloc (k, sizeof (char));
 					memcpy (tmsg->Message, buffer, k);
@@ -683,7 +713,8 @@ threadfunc RedirectorWorker( void *Dummy ) {
 } ;
 
 //watches for timeouted clients
-threadfunc Maintenance(void *Dummy){
+threadfunc Maintenance(void *Dummy)
+{
 	while(true){
 		Sleep(1000);
 		time(&curtime);
@@ -710,7 +741,7 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 	int err = WSAStartup (wVersionRequested, &wsaData);
 
 	if (err != 0) {
-		MessageBox (0, "Could not initialize Winsocks2", "", MB_OK);
+		MessageBoxA(0, "Could not initialize Winsocks2", "", MB_OK);
 		return 0;
 	}
 
@@ -729,7 +760,7 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 				Sleep (1000);
 			ClearHosts ();
 		} else {
-			MessageBox (0, "Server down or hosts file write protected.", "Error", MB_OK);
+			MessageBoxA(0, "Server down or hosts file write protected.", "Error", MB_OK);
 		}
 
 		free (CurrentServer);
@@ -741,13 +772,14 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 	InitCtrls.dwICC = ICC_LISTVIEW_CLASSES;
 	InitCtrls.dwSize = sizeof (INITCOMMONCONTROLSEX);
 
-	if (!InitCommonControlsEx (&InitCtrls)) {
-		MessageBox (0, "Could not initialize CommonControls", "Error", MB_OK);
+	if (!InitCommonControlsEx (&InitCtrls))
+	{
+		MessageBoxA(0, "Could not initialize CommonControls", "Error", MB_OK);
 		return 1;
 	}
 
 	//creating own redirector
-	time (&curtime);
+	time(&curtime);
 	RedirectSocket = socket (AF_INET, SOCK_STREAM, 0);
 
 	//binding them to specific ports
@@ -758,7 +790,7 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 	int k = bind (RedirectSocket, (SOCKADDR *)&localsin, sizeof (SOCKADDR_IN));
 
 	if (k == INVALID_SOCKET) {
-		MessageBox (0, "Could not initialize redirect socket\nMaybe you have server started on this box.", "Error", MB_OK);
+		MessageBoxA(0, "Could not initialize redirect socket\nMaybe you have server started on this box.", "Error", MB_OK);
 		closesocket(RedirectSocket);
 		RedirectSocket=INVALID_SOCKET;
 	}else{
@@ -777,15 +809,16 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 
 	StartListener ();
 
-	if (listenerSocket == INVALID_SOCKET) {
-		MessageBox (0, "Could not bind listenerSocket", "", MB_OK);
+	if (listenerSocket == INVALID_SOCKET)
+	{
+		MessageBoxA(0, "Could not bind listenerSocket", "", MB_OK);
 		return 0;
 	}
 
-	dwnd = CreateDialog (hInstance, MAKEINTRESOURCE (IDD_MAIN), NULL, &MainDlgProc);
+	dwnd = CreateDialogA(hInstance, MAKEINTRESOURCE(IDD_MAIN), NULL, &MainDlgProc);
 
 	if (dwnd == NULL) {
-		MessageBox (0, "Could not create window", "", MB_OK);
+		MessageBoxA(0, "Could not create window", "", MB_OK);
 	}
 
 	ShowWindow (dwnd, SW_SHOW);

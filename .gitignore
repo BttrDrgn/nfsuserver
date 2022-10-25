@@ -1,9 +1,4 @@
+build
+.vscode
 .vs
-Debug
-Release
-*.user
-*.aps
-*.dat
-nfsuserver/*.log
-nfsuserver/*.o
-nfsuserver/nfsuserver
+node_modules/

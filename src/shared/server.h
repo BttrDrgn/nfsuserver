@@ -295,9 +295,9 @@ public:
 
 bool RecvCommand(SOCKET sock, char* buffer);
 bool SendCommand(SOCKET sock, char* command, char* params[], int paramcount);
-int MakeCommand(char* buffer, char* command, char* params[], int paramcount);
-void BroadCastCommand(UsersClass* users, char* command, char* params[], int paramcount, char* buffer);
-void BroadCastCommand(RUsersClass& users, char* command, char* params[], int paramcount, char* buffer);
+int MakeCommand(char* buffer, const char* command, char* params[], int paramcount);
+void BroadCastCommand(UsersClass* users, const char* command, char* params[], int paramcount, char* buffer);
+void BroadCastCommand(RUsersClass& users, const char* command, char* params[], int paramcount, char* buffer);
 int recvn(SOCKET sock, char* buf, int required);
 int atoi2(char* str);
 char* GetPlayerStat(const char* Name);

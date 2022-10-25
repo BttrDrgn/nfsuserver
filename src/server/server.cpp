@@ -1,7 +1,7 @@
 #include "win_nix.h"
 #include "objects.h"
 
-extern void Log(char* log);
+extern void Log(const char* log);
 extern bool Verbose;
 
 extern char* arr[30];
@@ -225,8 +225,10 @@ void UsersClass::RemoveUser(UserClass* user) {
 void ServerClass::SendRoomsToUser(UserClass* user, char* buffer) {
 	RoomClass* tmp;
 	tmp = Rooms.First;
-	while (tmp != NULL) {
-		if ((tmp->Count > 0) || (tmp->IsGlobal)) {
+	while (tmp != NULL)
+	{
+		if ((tmp->Count > 0) || (tmp->IsGlobal))
+		{
 			sprintf(arr2[0], "I=%u", tmp->ID);
 			sprintf(arr2[1], "N=%s", tmp->Name);
 			sprintf(arr2[2], "H=3PriedeZ");
@@ -235,9 +237,12 @@ void ServerClass::SendRoomsToUser(UserClass* user, char* buffer) {
 			sprintf(arr2[5], "L=50");
 			sprintf(arr2[6], "P=0");
 			if (user->Connection != NULL)
+			{
 				user->Connection->OutgoingMessages.AddMessage(MakeMessage(buffer, "+rom", arr, 7));
+			}
 		}
-		else {
+		else
+		{
 			sprintf(buffer, "Error:Room empty\n");
 			if (Verbose) Log(buffer);
 		}
@@ -260,12 +265,14 @@ bool ServerClass::RegisterUser(char* username) {
 	};
 };
 
-RoomsClass::RoomsClass() {
+RoomsClass::RoomsClass()
+{
 	cid = 1;
 	Count = 0;
 }
 
-void BroadCastCommand(RUsersClass& users, char* command, char* params[], int paramcount, char* buffer) {
+void BroadCastCommand(RUsersClass& users, const char* command, char* params[], int paramcount, char* buffer)
+{
 	RUserClass* tmp = users.First;
 
 	while (tmp != NULL) {
@@ -276,7 +283,8 @@ void BroadCastCommand(RUsersClass& users, char* command, char* params[], int par
 	}
 };
 
-void BroadCastCommand(UsersClass* users, char* command, char* params[], int paramcount, char* buffer) {
+void BroadCastCommand(UsersClass* users, const char* command, char* params[], int paramcount, char* buffer)
+{
 	UserClass* tmp = users->First;
 
 	while (tmp != NULL) {
